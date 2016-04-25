@@ -8,3 +8,4 @@ link = pattren.findall(sitemapUrl)
 f = open('url.txt',r'w')
 f.writelines(line.strip()+'\n' for line in link)
 f.close
+#ceshi
