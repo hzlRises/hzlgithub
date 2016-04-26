@@ -9,7 +9,7 @@ def getUrl(keyword):
 	return url
 #判断前百度前十名是否有我站url
 def getIfMatch(getjson):	
-	pattern = re.compile(r'home.fang.com\\/zhishi\\/')
+	pattern = re.compile(r'zhishi.fang.com\\/jiaju\\/')
 	zhishiurl = pattern.findall(getjson)
 	bool = zhishiurl
 	return bool
@@ -25,6 +25,7 @@ def getJson(url):
 	c.perform()
 	jsonData = c.fp.getvalue()
 	return jsonData
+
 #打开文件
 f = open('result.txt',r'w')
 #初始化关键词数量
@@ -35,7 +36,7 @@ for line in open('kw.txt'):
 	#获取关键词个
 	keywordnum += 1
 	#去除换行
-	keyword = line.strip()
+	keyword = line.strip().replace(' ','')
 	#将拼接的url赋值给geturl
 	geturl = getUrl(keyword)
 	#将百度返回该关键词对应的json数据赋值给getjson
@@ -55,8 +56,9 @@ for line in open('kw.txt'):
 	for line in range(0,10):
 		serpUrl = jsondata["feed"]["entry"][line]["url"]#遍历jsondata中url键的键值	
 		f.write('%s'%serpUrl+'\n')
-print '关键词数量:%s'%keywordnum
-print '百度前十有排名关键词数量:%s'%num
-print '占比:'+str(int(float(num)/keywordnum*100))+'%'
+	print '%s,done'%keyword
+print 'ALL:%s'%keywordnum
+print 'HIT:%s'%num
+print 'PERCENT:'+str((float(num)/keywordnum*100))+'%'
 #关闭文件
 f.close()
