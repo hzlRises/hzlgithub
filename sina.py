@@ -2,7 +2,7 @@
 import pycurl
 import re
 import StringIO
-import urllib,urllib2
+from time import ctime,sleep
 '''
 关键词放在kw.txt中，kw.txt文件需要用notepad++转换为ANSI编码
 结果保存在result.txt中，示例：
@@ -31,19 +31,20 @@ def getWant(html):
 	#字符串再转换为列表，方便写入文件换行
 	htmlContentStrToList = htmlContentListToStr.split(',')
 	return htmlContentStrToList
+def getUrl(keyword):
+	url = 'http://search.sina.com.cn/?q=%s&sort=time&sort=time&range=title&c=news&from=channel&page=1'% keyword
+	return url
 num = 0
 f = open('result.txt',r'w')
 for line in open('kw.txt'):
 	num += 1
 	keyword = line.strip()
-	page = 0
-	for line in range(1,3):#每个关键词抓前两页
-		page += 1
-	 	url = 'http://search.sina.com.cn/?q=%s&sort=time&sort=time&range=title&c=news&from=channel&page=%s'%(keyword,line)
-#		url = getUrl(keyword)#也可以把拼接url单独写一个函数，不过这样的话每个关键词只抓第一页比较方便
-		html = getHtml(url)
-		result = getWant(html)
-		f.write('%s,page:%s result:'%(keyword,page)+'\n')
-		f.writelines(line+'\n' for line in result)#将列表依次写入TXT文件
-		print '%s,page:%s,'%(keyword,page)+'done'
+	geturl = getUrl(keyword)
+	html = getHtml(geturl)
+	result = getWant(html)
+	print 'begin:%s'%ctime()
+	f.write('%s result:'%keyword+'\n')
+	f.writelines(line+'\n' for line in result)#将列表依次写入TXT文件
+	print '%s'%keyword+'done'
+	print 'end:%s'%ctime()	
 f.close()
