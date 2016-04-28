@@ -38,7 +38,7 @@ def getWant(line):
 		"Accept-Encoding:gzip, deflate, br",
 		"Accept-Language:zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3",
 		"Connection:keep-alive",
-		"Host:www.baidu.com",
+#		"Host:www.baidu.com",
 		"User-Agent:%s" %getUA()
 	]
 	url = url_list[line]#获取每个索引号为line的对应值
@@ -48,8 +48,9 @@ def getWant(line):
 	c.setopt(pycurl.FOLLOWLOCATION,True)
 	c.setopt(pycurl.MAXREDIRS,3)
 	c.setopt(pycurl.CONNECTTIMEOUT,60)
+	c.setopt(pycurl.TIMEOUT,120)
 	c.setopt(pycurl.ENCODING,'gzip,deflate')
-#	c.setopt(pycurl.HTTPHEADER,headers)
+	c.setopt(pycurl.HTTPHEADER,headers)
 #	c.setopt(pycurl.POST, 1)
 #	c.setopt(pycurl.POSTFIELDS, data)
 	c.fp =StringIO.StringIO()	
@@ -66,31 +67,43 @@ def getWant(line):
 	htmlContentListToStr = htmlContentListToStr.replace('" target="_blank">','').replace('<span style="color:#C03">','').replace('</span>','').replace('<span class="fgray_time">','').replace('</span>','').replace('</a>','')
 	htmlContentStrToList = htmlContentListToStr.split(',')#字符串再转换为列表，方便写入文件换行
 	#----------正则提取结束----------
-	mutex.acquire()	#创建锁
-	print 'begin:%s'% ctime()	
+	
+	mutex.acquire()	#创建锁	
+	f.write(keyword_list[line]+' result:'+'\n')
 	f.writelines(line+'\n' for line in htmlContentStrToList)
-	print '%s done'% url_list[line]
-	print 'end:%s'% ctime()
+	print '%s done'% url_list[line]	
 	mutex.release()	#释放锁
+	print 'end:%s'% ctime()
 #	sleep(1)
 	
 #每个线程处理一个区间
 def getRange(line,r):
     for i in range(line,r):
         getWant(i)#这个函数传参起初写成了line，导致...fuck...不知道该咋说，把线程数设置成1这种极限情况就能重现bug
-totalThread = 1		#设置线程数
-url_list = []		#初始化关键词列表
-num = 0				#初始化关键词文本中的关键词数量
+
+#Begin>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+print 'begin:%s'% ctime()		
+totalThread = 4		#设置线程数，线程数小于等于关键词数
+keyword_list = []	#初始化关键词列表
+url_list = []		#初始化关键词拼接url的列表
+num = 0			#初始化关键词文本中的关键词数量
+mutex = threading.Lock()#threading.Lock()方法添加互斥锁
+
 for line in open('kw.txt'):	
 	num += 1		#计算关键词数量
-	keyword = line.strip()
-	url = 'http://search.sina.com.cn/?q=%s&sort=time&sort=time&range=title&c=news&from=channel&page=1'%keyword
-	url_list.append(url)#将关键词保存在url_list列表中
+	keyword = line.strip()	
+	url = 'http://search.sina.com.cn/?q=%s&sort=time&range=title&c=news&from=channel&page=1'%keyword
+	keyword_list.append(keyword)
+	url_list.append(url)#将关键词拼接的url保存在url_list列表中
+	
 gap = num / totalThread#每个线程需要处理gap个url
+
 for i,j in enumerate(url_list):#enumerate获取列表索引号
 	lastIndex = i#获取最后一个索引的索引号
-mutex = threading.Lock()#threading.Lock()方法添加互斥锁
+	
 f = open('result1.txt',r'w')
-for line in range(0,lastIndex,gap):
-	t = threading.Thread(target=getRange,args=(line, line+gap,))#循环创建线程，args传参
+
+for line in range(0,lastIndex,gap):	
+	t = threading.Thread(target=getRange,args=(line, line+gap))#循环创建线程，args传参
 	t.start()
+	
