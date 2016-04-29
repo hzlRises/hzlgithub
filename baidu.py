@@ -36,8 +36,9 @@ def getWant(line):
 		"Accept-Language:zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3",
 		"Connection:keep-alive",
 		"Host:www.baidu.com",
-		"User-Agent:%s" %getUA()
+		"User-Agent:%s" % getUA()
 	]
+	keyword = keyword_list[line]
 	url = url_list[line]#获取每个索引号为line的对应值
 	c = pycurl.Curl()
 	c.setopt(pycurl.URL, url)
@@ -47,43 +48,36 @@ def getWant(line):
 	c.setopt(pycurl.TIMEOUT,120)
 	c.setopt(pycurl.ENCODING,'gzip,deflate')
 	c.setopt(pycurl.HTTPHEADER,headers)
-#	c.setopt(pycurl.POST, 1)
-#	c.setopt(pycurl.POSTFIELDS, data)
+#	c.setopt(pycurl.POST, 1)#需要post数据时使用
+#	c.setopt(pycurl.POSTFIELDS, data)#需要post数据时使用
 	c.fp =StringIO.StringIO()	
 	c.setopt(c.WRITEFUNCTION, c.fp.write)
 	c.perform()
 	html = c.fp.getvalue()
-	#----------正则提取开始----------
-	hiturl = re.findall(r'home.fang.com\\/zhishi\\/',html)	
-
-#	getContentToDict = json.loads(getContent)#转换为python字典格式
-#	bool = getContent
-	global hitsum
-	hitsum = 0
-	mutex.acquire()#创建锁	
-	if(hiturl):
-		hitsum += 1		
-	else:
-		hitsum = hitsum
-	return hitsum
-	mutex.release()#释放锁
-'''	
 	mutex.acquire()#创建锁
-	if(hiturl):		
-		hitsum += 1
-		return hitsum
+	
+	hiturl = re.findall(r'home.fang.com\\/zhishi\\/',html)#暂时还没想出来计数的好方法
+	jsondata = json.loads(html)	#转换为python的字典格式
+	f.write(keyword+' ')
+	if (hiturl):
+		f.write('yes'+'\n')
 	else:
-		hitsum = hitsum
-		return hitsum
+		f.write('no'+'\n')
+		
+	for line in range(10):		
+		serpUrl = jsondata["feed"]["entry"][line]["url"]#遍历jsondata中url键的键值
+		f.write(serpUrl+'\n')#url写入文件		
 	mutex.release()#释放锁
-'''
+
+#每个线程处理一个空间
 def getRange(line,r):
-	for i in range(line,r):#起初写成了for i in (line,r) 我操他妈的，又栽到这个函数了
+	for i in range(line,r):#起初写成了for i in (line,r) WTF...又栽到这个函数了
 		getWant(i)
+
 #Begin>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 print 'begin:%s'% ctime()
 f = open('result.txt',r'w')
-totalThread  = 3#设置线程数	
+totalThread  = 3	#设置线程数,线程数小于等于关键词数
 keyword_list = []#初始化所有关键词列表
 url_list =[]#初始化关键词拼接后的url列表
 mutex = threading.Lock()#threading.Lock()方法添加互斥锁
@@ -92,6 +86,8 @@ for line in open('kw.txt'):
 	line = line.strip()
 	keyword_list.append(line)
 	sum += 1#计算关键词个数
+
+#拼接url并保存在url_list列表里
 for line in keyword_list:
 	line = line.strip()
 	url = 'http://www.baidu.com/s?wd=%s&rn=10&tn=json'%line
@@ -100,10 +96,20 @@ for line in keyword_list:
 gap = sum/totalThread #每个线程要处理的url
 for i,j in enumerate(url_list):
 	lastIndex = i#获取最后一个url的索引号
-print lastIndex
-
 for line in range(0,lastIndex,gap):
 	t = threading.Thread(target=getRange,args=(line,line+gap))
 	t.start()
-print sum
-
+print '正在计算,等待5秒....'
+sleep(5)
+hitnum = 0
+for line in open('result.txt',r'r'):
+	line = line.strip()
+	yesOrNo = re.findall(r'yes',line)
+	if(yesOrNo):
+		hitnum += 1
+	else:
+		hitnum = hitnum
+print 'all:%s'%sum
+print 'hitsum:%s'%hitnum
+print '%s'% str(float(hitnum)/sum*100)+'%'
+print 'end:%s'%ctime()
