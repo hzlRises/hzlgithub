@@ -6,6 +6,24 @@ import re
 import random
 import threading
 from time import sleep,ctime
+'''
+如果计算有明显的误差可以另外运行这个附加脚本：
+#coding:utf-8
+from time import sleep,ctime
+sum = 0
+for line in open('result.txt',r'r'):
+	sum += 1
+	line = line.strip()
+	yesOrNo = re.findall(r'yes',line)
+	if(yesOrNo):
+		hitnum += 1
+	else:
+		hitnum = hitnum
+print 'all:%s'%sum
+print 'hitsum:%s'%hitnum
+print '%s'% str(float(hitnum)/sum*100)+'%'
+print 'end:%s'%ctime()
+'''
 #从uaList中随机获取一个ua
 def getUA():
     uaList = [
