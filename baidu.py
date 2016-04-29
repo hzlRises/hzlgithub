@@ -11,8 +11,9 @@ from time import sleep,ctime
 #coding:utf-8
 from time import sleep,ctime
 sum = 0
-for line in open('result.txt',r'r'):
+for line in open('kw.txt'):
 	sum += 1
+for line in open('result.txt',r'r'):
 	line = line.strip()
 	yesOrNo = re.findall(r'yes',line)
 	if(yesOrNo):
