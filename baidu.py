@@ -48,7 +48,7 @@ def getUA():
     newUa = random.choice(uaList)
     return newUa
 #获取关键词对应的返回json数据
-def getWant(line):	
+def getWant(line):
 	headers = [
 		"Accept:text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
 		"Accept-Encoding:gzip, deflate, br",
@@ -57,8 +57,9 @@ def getWant(line):
 		"Host:www.baidu.com",
 		"User-Agent:%s" % getUA()
 	]
-	keyword = keyword_list[line]
+	keyword = keyword_list[line]	
 	url = url_list[line]#获取每个索引号为line的对应值
+	#最后一个线程处理的url数量要等于gap数，也就是说最好是，num可以被totalThread整除
 	c = pycurl.Curl()
 	c.setopt(pycurl.URL, url)
 	c.setopt(pycurl.FOLLOWLOCATION,True)
@@ -75,7 +76,7 @@ def getWant(line):
 	html = c.fp.getvalue()
 	mutex.acquire()#创建锁
 	
-	hiturl = re.findall(r'home.fang.com\\/zhishi\\/',html)#暂时还没想出来计数的好方法
+	hiturl = re.findall(r'home.fang.com\\/album\\/',html)#暂时还没想出来计数的好方法
 	jsondata = json.loads(html)	#转换为python的字典格式
 	f.write(keyword+' ')
 	if (hiturl):
@@ -92,11 +93,10 @@ def getWant(line):
 def getRange(line,r):
 	for i in range(line,r):#起初写成了for i in (line,r) WTF...又栽到这个函数了
 		getWant(i)
-
 #Begin>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 print 'begin:%s'% ctime()
 f = open('result.txt',r'w')
-totalThread  = 3	#设置线程数,线程数小于等于关键词数
+totalThread  = 10	#设置线程数,线程数小于等于关键词数
 keyword_list = []#初始化所有关键词列表
 url_list =[]#初始化关键词拼接后的url列表
 mutex = threading.Lock()#threading.Lock()方法添加互斥锁
@@ -116,7 +116,7 @@ gap = sum/totalThread #每个线程要处理的url
 for i,j in enumerate(url_list):
 	lastIndex = i#获取最后一个url的索引号
 for line in range(0,lastIndex,gap):
-	t = threading.Thread(target=getRange,args=(line,line+gap))
+	t = threading.Thread(target=getRange,args=(line,line+gap))#注意最后一个线程中，list Index out of range，num要可以被totalThread整除
 	t.start()
 print '正在计算,等待5秒....'
 sleep(5)
