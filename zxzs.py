@@ -29,7 +29,7 @@ def getUA():
     ]
     newUa = random.choice(uaList)
     return newUa
-#获取关键词对应的返回json数据
+
 def getWant(line):
 	try:
 		headers = [
