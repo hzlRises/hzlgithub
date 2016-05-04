@@ -71,7 +71,7 @@ print 'Begin:%s'%ctime()
 f = open('result.txt',r'w')
 page = 0
 url_list = []
-for line in range(0,8):#构造10个url
+for line in range(0,10):#构造10个url
 	page += 1
 	url = 'http://zhishi.fang.com/zxzs/f%s/' %page
 	url_list.append(url)
