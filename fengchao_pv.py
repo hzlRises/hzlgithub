@@ -1,41 +1,84 @@
-﻿# coding:utf-8
-from base import *
-
-if '--help' in sys.argv[1]:
-	print '''python fengchao.py input_file output_file
-input_file每行一个关键词
-output_file包含两列，搜索词和搜索量
+# coding:utf-8
+import urllib
+import pycurl
+import StringIO
+import json
+import random
+'''
 文件需打开并更新其中的COOKIE, TOKEN和USERID
 '''
-	quit()
-COOKIE = 'BAIDUID=9F58FC9D722E08254E7F1E9ED6E5621A:FG=1; BIDUPSID=9F58FC9D722E08254E7F1E9ED6E5621A; PSTM=1463534354; H_PS_PSSID=; BDSFRCVID=7M_sJeCCxG3xuKvRMFd1Sqyr09sgaLlGJ5x73J; H_BDCLCKID_SF=JRu8_I_MtCvbfP0khn32btFHqxbXq5buX57Z0lOnMp05J-5o5l5YQ43L0pQ8bj88-KvK2nRTWD5WMIO_e4bK-TrBDa8eJx5; H_WISE_SIDS=104688_104588_104919_104495_100181_102435_106368_104483_103550_106311_104331_106058_104340_106323_106237_103999_106149_104639_106071_106162_106158_106238; plus_cv=1::m:1552fab9; SIGNIN_UC=70a2711cf1d3d9b1a82d2f87d633bd8a02135655377; uc_login_unique=bfe2f9157677a9806ecdb45bb824cab3; __cas__st__3=9e118e11cf7f09176403c3ad893e60d9e29ee4f909ced69656eead3e610d09e22a38fbe0e14d313a230535a9; __cas__id__3=8048066; __cas__rn__=213565537; SAMPLING_USER_ID=8048066; BDRCVFR[gltLrB7qNCt]=mk3SLVN4HKm; BDRCVFR[VjobkFsAYtR]=mk3SLVN4HKm'
-TOKEN = '9e118e11cf7f09176403c3ad893e60d9e29ee4f909ced69656eead3e610d09e22a38fbe0e14d313a230535a9'
+COOKIE = 'BAIDUID=2E98DE41EE30256713329930B5EB3EFF:FG=1; BIDUPSID=2E98DE41EE30256713329930B5EB3EFF; PSTM=1464002284; BDUSS=WRqNDNwckMxaVozRHdyaERLYUVjczN2UUVRdDktcDYzcXluNH5QUlE4bVh6V3RYQVFBQUFBJCQAAAAAAAAAAAEAAABh7s8nxLDErGxpZmUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJdARFeXQERXM; __cfduid=d1632abe19091880dc75d9b8696d1f1171464092485; H_PS_PSSID=19637_20145_1428_17942_19860_17001_15471_11787_20011; BDRCVFR[en5Q-dJqX6n]=mbxnW11j9Dfmh7GuZR8mvqV; BDRCVFR[FhauBQh29_R]=mbxnW11j9Dfmh7GuZR8mvqV; SIGNIN_UC=70a2711cf1d3d9b1a82d2f87d633bd8a02141940599; uc_login_unique=10319896e6b1bd87aaec210874b8c16a; __cas__st__3=c05272b195a3ae7884259d02742e7752f3bdb8fa62d6ca766d7ac8f765381dbfaa47bfb056d9bb351a1909ad; __cas__id__3=8048066; __cas__rn__=214194059; SAMPLING_USER_ID=8048066'
+TOKEN = 'c05272b195a3ae7884259d02742e7752f3bdb8fa62d6ca766d7ac8f765381dbfaa47bfb056d9bb351a1909ad'
 USERID = '8048066'
-
-# 参数1 输入文件，参数2 输出文件
-# 输入文件每行一个词根，输出文件两列：关键词、搜索量
-input_file, output_file = sys.argv[1:3]
-
-f = open(output_file, 'w')
-
-for i, line in enumerate(open(input_file), 1):
-	kw = line.rstrip().split('\t')[0]
-	print i, kw
+def getUA():
+    uaList = [
+        'Mozilla/4.0+(compatible;+MSIE+6.0;+Windows+NT+5.1;+SV1;+.NET+CLR+1.1.4322;+TencentTraveler)',
+        'Mozilla/4.0+(compatible;+MSIE+6.0;+Windows+NT+5.1;+SV1;+.NET+CLR+2.0.50727;+.NET+CLR+3.0.4506.2152;+.NET+CLR+3.5.30729)',
+        'Mozilla/5.0+(Windows+NT+5.1)+AppleWebKit/537.1+(KHTML,+like+Gecko)+Chrome/21.0.1180.89+Safari/537.1',
+        'Mozilla/4.0+(compatible;+MSIE+6.0;+Windows+NT+5.1;+SV1)',
+        'Mozilla/5.0+(Windows+NT+6.1;+rv:11.0)+Gecko/20100101+Firefox/11.0',
+        'Mozilla/4.0+(compatible;+MSIE+8.0;+Windows+NT+5.1;+Trident/4.0;+SV1)',
+        'Mozilla/4.0+(compatible;+MSIE+8.0;+Windows+NT+5.1;+Trident/4.0;+GTB7.1;+.NET+CLR+2.0.50727)',
+        'Mozilla/4.0+(compatible;+MSIE+8.0;+Windows+NT+5.1;+Trident/4.0;+KB974489)',
+        'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 5.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/30.0.1599.101 Safari/537.36',
+        "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.1; Trident/4.0)",
+        "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 6.1; WOW64; Trident/4.0; SLCC2; .NET CLR 2.0.50727; .NET CLR 3.5.30729; .NET CLR 3.0.30729; .NET4.0C; .NET4.0E)",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.6; rv:2.0.1) Gecko/20100101 Firefox/4.0.1",
+        "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; Maxthon 2.0)",
+        "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; The World)",
+        "Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1"
+    ]
+    newUa = random.choice(uaList)
+    return newUa
+f = open('resultssss.txt',r'w')
+fi = open('resultsssss.txt',r'w')
+for line in open('kw.txt'):
+	kw = line.strip()
+	print kw
 
 	# 指定POST的内容
 	post = urllib.urlencode({
 		'params': '{"entry":"kr_tools","query":"%s","logid":-1,"querytype":1}' % kw,
-		'path': 'GET/kr/suggestion',
+		'path': 'jupiter/GET/kr/word',
 		'token': TOKEN,
 		'userid': USERID,
 	})
-
-	data = curl('http://fengchao.baidu.com/nirvana/request.ajax?path=GET/kr/suggestion', POSTFIELDS=post, COOKIE=COOKIE)
-
-	# 异常情况下直接输出获取到的全部内容
+	headers = [
+		'Host: fengchao.baidu.com',
+		'User-Agent: %s' %getUA(),
+		'Accept: text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+		'Accept-Language: zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3',
+		'Accept-Encoding: gzip, deflate',
+		'Referer: http://fengchao.baidu.com/nirvana/main.html?userid=8048066',
+		'Connection: keep-alive',
+		'COOKIE:%s' %COOKIE,
+		'TOKEN:%s' %TOKEN,
+		'USERID:%s'%USERID,
+	]
+	url = 'http://fengchao.baidu.com/nirvana/request.ajax?path=jupiter/GET/kr/word'	
+	c = pycurl.Curl()
+	c.setopt(pycurl.URL, url)
+	c.setopt(pycurl.ENCODING, 'gzip,deflate')
+	c.fp = StringIO.StringIO()
+	c.setopt(pycurl.HTTPHEADER,headers) 
+	c.setopt(pycurl.POST, 1)
+	c.setopt(pycurl.POSTFIELDS, post)
+	c.setopt(c.WRITEFUNCTION, c.fp.write)
+	c.perform()
+	data = c.fp.getvalue()
+	jsondata = json.loads(data)
+	for group in json.loads(data)['data']['group']:
+		if(group['resultitem'][0]['word'].encode('utf-8') == kw):
+			print >>f, '%s %s %s' % (group['resultitem'][0]['word'].encode('utf-8'),group['resultitem'][0]['pv'],group['resultitem'][0]['wordid'])
+		else:
+			for line in group['resultitem']:
+				print >>fi, '%s\t%d' % (line['word'].encode('utf-8'), line['pv'])
+f.close
+fi.close
+'''
+异常情况可以这样写
 	if 'wordid' not in data:
 		print data
-		continue	
-	for group in json.loads(data)['data']['group']:
-		print >>f, '%s\t%s' % (group['resultitem'][0]['word'].encode('utf-8'),group['resultitem'][0]['pv'])
-f.close  
+		continue
+'''
