@@ -39,7 +39,7 @@ for line in file:
 	sum += 1
 	line = line.strip()	
 	keyword_list.append(line)
-	url = 'http://search.fang.com/news/searchxml1.jsp?q=%s&newschannel=¼Ò¾ÓÍø&start=0&occur=and&fld=title'  %line
+	url = 'http://search.fang.com/news/searchxml1.jsp?q=%s&newschannel=å®¶å±…ç½‘&start=0&occur=and&fld=title'  %line
 	url_list.append(url)
 gap = sum/totalThread
 for i,j in enumerate(url_list):
