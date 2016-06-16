@@ -86,6 +86,7 @@ html = '''
 s = BeautifulSoup(html,"lxml")
 
 print s.find(id="h")
+print s.find("div",attrs={"id":"i"})
 print s.find_all("div",attrs={"id":"h"})
 
 '''
