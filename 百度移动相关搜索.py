@@ -6,6 +6,9 @@ import StringIO
 import urllib2
 import re
 from time import sleep
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 cookie = 'BAIDUID=3FDC61543A692A14C6665C6C6BAF8DAB:FG=1; H_WISE_SIDS=106833_102567_102065_100039_100331_100289_106530_102728_106665_106924_104341_106323_106702_104000_106927_106064_107042_104611_104637_106599_106795; BDSVRTM=117; BDSVRBFE=Go; __bsi=16820914715565837297_31_0_I_R_0_0303_C02F_Y_I_I_0referer:https://m.baidu.com/?from=844b&vit=fps'
 
 def getUa():
@@ -48,7 +51,24 @@ for line in file:
 	c.setopt(c.WRITEFUNCTION,b.write)
 	c.perform()#括号别忘了
 	html = b.getvalue()
-	s = BeautifulSoup(html,"lxml")
+	s = BeautifulSoup(html,"lxml")	
+	relativewords = s.find(id="relativewords").find_all("a")
+	print type(relativewords)#<class 'bs4.element.ResultSet'>
+	for word in relativewords:
+		print word.string#或者print word.get_text()
+		with open('re.txt',r'a+') as my:
+			my.write(word.get_text()+'\n')
+	
+	'''
+	relativewords = s.find_all("a",attrs={"class":"rw-item"},limit=8)#源码中8个相关搜索词重复了一次
+	for word in relativewords:
+		print word.get_text()
+		with open('re.txt',r'a+') as my:
+			my.write(word.get_text()+'\n')
+	
+	'''
+	
+	'''
 	relativewords = s.find(id="relativewords")
 	rela = str(relativewords)
 	word = re.findall(r'<a[\s\S]*?>(.*?)</a>',rela)
@@ -63,7 +83,8 @@ for line in file:
 		with open('ddd.txt',r'a+') as b:
 			print line+'meiyou'
 			b.write(line+'\n')
-#	sleep(1)		
+	'''
+	sleep(1)		
 		
 		
 
