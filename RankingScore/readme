@@ -1,0 +1,20 @@
+功能：计算某个行业热搜词，各个网站在百度的排名得分情况
+
+MySQL步骤：
+1.安装MySQL，使用navicat for mysq新建数据库rank
+2.数据库新建两个表t_keyword、t_rank_copy
+3.表t_keyword含有三列：id、keyword、searchnum，id自增
+4.表t_rank_copy含有四列：id、keyword、url、pcrank，id自增
+
+关键词入库：
+在目录中新建keyword.xlsx，行业热搜词放入第一列，每个热搜词对应的搜索量放入第二列
+cmd执行Import，将excel数据导入表t_keyword
+
+抓取排名：
+cmd执行Crawler
+
+分析数据：
+cmd执行Calculate
+
+最后结果保存在result.xlsx
+
