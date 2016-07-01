@@ -68,8 +68,14 @@ for row in data:
 totalThread  = 10
 gap = num/totalThread
 mutex = threading.Lock()
-
+print 'begin'
+thread_list = []
 for line in range(0,num,gap):
-	t = threading.Thread(target=getRange,args=(line,line+gap))#注意最后一个线程中，list Index out of range，num要可以被totalThread整除
-	t.start()
-	sleep(1)
+	t = threading.Thread(target=getRange,args=(line,line+gap))#娉ㄦ剰鏈�鍚庝竴涓嚎绋嬩腑锛宭ist Index out of range锛宯um瑕佸彲浠ヨtotalThread鏁撮櫎
+	t.start()#寰幆寮�
+	thread_list.append(t)
+for tt in thread_list:#寰幆join
+	tt.join()
+print match
+print all
+print percentage
