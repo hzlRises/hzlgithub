@@ -12,8 +12,8 @@ mail_to = '****'
 def sendMail(sub,content):
 	msg = MIMEText(content,'plain','utf-8')
 	msg['Subject'] = Header(sub,'utf-8')  #主题	
-	msg['From'] = mail_user#不是很理解
-	msg['To'] = mail_to#为什么要多此一举
+	msg['From'] = mail_user#
+	msg['To'] = mail_to#
 	s = smtplib.SMTP()
 	s.connect(mail_host)
 	s.login(mail_user, mail_pass)
