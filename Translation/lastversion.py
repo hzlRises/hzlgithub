@@ -12,6 +12,7 @@ mail_user = '****'
 mail_pass = '****'
 mail_to = '****'
 
+#请求数据
 def getJson(keyword):
 	url = 'http://fanyi.youdao.com/openapi.do'
 	payload = {
@@ -26,6 +27,8 @@ def getJson(keyword):
 	r = requests.get(url,params=payload)
 	jsondata = json.loads(r.content)	
 	return jsondata
+	
+#分析数据
 def getItem(jsondata):
 	result_list = []
 	#查询词
@@ -74,6 +77,7 @@ def getItem(jsondata):
 	result = '\n'.join(result_list)
 	sendMail(query,result)
 
+#发邮件
 def sendMail(sub,content):
 	msg = MIMEText(content,'plain','utf-8')
 	msg['Subject'] = Header(sub,'utf-8')  #主题	
