@@ -4,6 +4,5 @@ import requests
 headers = {'Content-Type':'text/plain'}
 url = 'http://data.zz.baidu.com/urls'
 params = {'site':'domain','token':'yourtoken','type':'original'}
-with open('urls.txt',r'rb') as file:	
-	r = requests.post(url,params=params,headers=headers,data=''.join(file.readlines()))
-	print r.content
+r = requests.post(url,params=params,headers=headers,data=open('urls.txt',r'rb'))
+print r.content
