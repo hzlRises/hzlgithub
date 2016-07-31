@@ -1,4 +1,8 @@
 #coding:utf-8
+_author_ = 'heziliang'
+'''
+转载请注明出处:https://github.com/hzlRises
+'''
 import time
 import re
 import threading
@@ -10,8 +14,8 @@ from time import sleep
 import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
-date = time.strftime("%Y-%m-%d",time.localtime(time.time()))
-conn = MySQLdb.connect('localhost','root','','heziliang',charset='utf8')
+today = time.strftime("%Y-%m-%d",time.localtime(time.time()))
+conn = MySQLdb.connect('localhost','root','','rank',charset='utf8')
 match = 0
 all = 0
 percentage = 0
@@ -56,10 +60,10 @@ keyword_list = []
 
 with conn:
 	cur = conn.cursor()
-	sql = 'select keyword from t_keyword order by rand() limit 1000'
+	sql = 'select keyword from t_keyword order by rand() limit 20'
 	cur.execute(sql)
-	conn.commit
-conn.close()
+#	conn.commit
+
 data = cur.fetchall()
 num = 0
 for row in data:	
@@ -84,3 +88,15 @@ for tt in thread_list:
 print match
 print all
 print percentage
+
+#将结果写入阿里云数据库
+rate = float(match)/all*100
+conn2 = MySQLdb.connect('ip','username','password','dbname',charset='utf8')
+with conn2:
+	cur2 = conn2.cursor()
+	sql = 'update baidu set waprank = %s where date="%s"' %(rate,today)
+	cur2.execute(sql)
+	conn2.commit
+conn2.close()
+
+
