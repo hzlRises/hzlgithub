@@ -38,7 +38,7 @@
         type: 'category',
         boundaryGap: false,	        
 		<?php		
-        $con = mysql_connect("rm-2ze2ec4330fud59f6o.mysql.rds.aliyuncs.com","baike","2016Hzl");
+        $con = mysql_connect("ip","username","password");
         if (!$con)
           {
           die('Could not connect: ' . mysql_error());
@@ -64,7 +64,7 @@
     series: [
         <?php
 
-        $con = mysql_connect("rm-2ze2ec4330fud59f6o.mysql.rds.aliyuncs.com","baike","2016Hzl");
+        $con = mysql_connect("ip","username","password");
         if (!$con)
           {
           die('Could not connect: ' . mysql_error());
