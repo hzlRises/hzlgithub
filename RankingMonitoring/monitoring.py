@@ -57,13 +57,21 @@ def getRange(line,r):#每个线程控制的数量
 
 def inputAliyunDB(match,all):#将查询的结果插入到阿里云的数据库	
 	rate = float(match)/all*100
-	conn2 = MySQLdb.connect('ip','username','password','dbname',charset='utf8')
-	with conn2:
-		cur2 = conn2.cursor()
-		sql = 'INSERT INTO `baidu` (pcrank,waprank,date) VALUES (%s,0,"%s")' %(rate,today)#waprank这里先写死，查询wap端时再update
-		cur2.execute(sql)
-		conn2.commit
-	conn2.close()
+	try:
+		conn2 = MySQLdb.connect('IP','USER','PASS','db',charset='utf8')
+		print 'Connection successful...'
+	except:
+		print 'Connection fail...'
+	try:
+		with conn2:
+			cur2 = conn2.cursor()
+			sql = 'INSERT INTO `baidu` (pcrank,waprank,date) VALUES (%s,0,"%s")' %(rate,today)#waprank这里先写死，查询wap端时再update
+			cur2.execute(sql)
+			conn2.commit
+		conn2.close()
+		print 'Input aliyunDB successful...'
+	except:
+		print 'Input aliyunDB fail...'
 
 print 'begin'
 with conn:#拿关键词
@@ -94,5 +102,8 @@ for tt in thread_list:#循环join
 #打印出有排名占比	
 print match
 print all
-print percentage
+print '%.1f'%((float(match)/all)*100)+'%'
+print 'Calculate done...'
+print 'Input aliyunDB begin...'
 inputAliyunDB(match,all)
+print 'Input done'
