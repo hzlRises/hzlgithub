@@ -60,7 +60,7 @@ keyword_list = []
 
 with conn:
 	cur = conn.cursor()
-	sql = 'select keyword from t_keyword order by rand() limit 20'
+	sql = 'select keyword from t_keyword order by rand() limit 1000'
 	cur.execute(sql)
 #	conn.commit
 
@@ -91,12 +91,21 @@ print percentage
 
 #将结果写入阿里云数据库
 rate = float(match)/all*100
-conn2 = MySQLdb.connect('ip','username','password','dbname',charset='utf8')
-with conn2:
-	cur2 = conn2.cursor()
-	sql = 'update baidu set waprank = %s where date="%s"' %(rate,today)
-	cur2.execute(sql)
-	conn2.commit
-conn2.close()
+try:
+	conn2 = MySQLdb.connect('ip','user','pass','db',charset='utf8')
+	print 'Connection successful...'
+except:
+	print 'Connection fail...'
+try:
+	with conn2:
+		cur2 = conn2.cursor()
+		sql = 'update baidu set waprank = %s where date="%s"' %(rate,today)
+		cur2.execute(sql)
+		conn2.commit
+	conn2.close()
+	print 'Input aliyunDB successful...'
+except:
+	print 'Input aliyunDB fail...'
+	
 
 
