@@ -15,10 +15,18 @@ import sys
 reload(sys)
 sys.setdefaultencoding('utf8')
 today = time.strftime("%Y-%m-%d",time.localtime(time.time()))#获取当前日期0000-00-00
-conn = MySQLdb.connect('localhost','root','','rank',charset='utf8')#本地数据库
+
+threadNum = 5
 match = 0#初始化可以匹配的数量
 all = 0#初始化查询关键词所有的数量
 percentage = 0#初始排名比值
+num = 0
+url_list = []
+keyword_list = []
+
+def getSql():
+	sql = 'select keyword from t_keyword order by rand() limit 10'
+	return sql
 
 def getIfmatch(html):#是否匹配	
 	pattern = re.compile(r'home.fang.com\\/zhishi\\/')
@@ -50,7 +58,7 @@ def getWant(line):#计算匹配占比
 		print 'all: '+str(all)+' match: '+str(match)+', percentage '+'%.1f'%((float(match)/all)*100)+'%'
 		mutex.release()
 	except:
-		print '%s Empty reply from server' %keyword	
+	 	print '%s Empty reply from server' %keyword	
 def getRange(line,r):#每个线程控制的数量
 	for i in range(line,r):
 		getWant(i)
@@ -58,10 +66,10 @@ def getRange(line,r):#每个线程控制的数量
 def inputAliyunDB(match,all):#将查询的结果插入到阿里云的数据库	
 	rate = float(match)/all*100
 	try:
-		conn2 = MySQLdb.connect('IP','USER','PASS','db',charset='utf8')
-		print 'Connection successful...'
+		conn2 = MySQLdb.connect('ip','user','pass','baikedb',charset='utf8')
+		print 'Connection AliyunDB Successful...'
 	except:
-		print 'Connection fail...'
+		print 'Connection Fail...'
 	try:
 		with conn2:
 			cur2 = conn2.cursor()
@@ -69,41 +77,58 @@ def inputAliyunDB(match,all):#将查询的结果插入到阿里云的数据库
 			cur2.execute(sql)
 			conn2.commit
 		conn2.close()
-		print 'Input aliyunDB successful...'
+		print 'Input AliyunDB Successful...'
 	except:
-		print 'Input aliyunDB fail...'
+		print 'Input AliyunDB Fail...'
+def getKeyword():
+	try:
+		conn = MySQLdb.connect('localhost','root','','heziliang',charset='utf8')#本地数据库
+		print 'Connection Localhost Successful...'
+	except:
+		print 'Connection Localhost Fail...'
+	try:
+		with conn:#拿关键词
+			cur = conn.cursor()
+			sql = getSql()
+			cur.execute(sql)
+			conn.commit
+		conn.close()
+		print 'Getkeyword  Successful...'
+	except:
+		print 'Getkeyword  Fail...'
+	data = cur.fetchall()
+	return data
+def getUrl(data):	
+	global num
+	for row in data:#拼接url	
+		keyword_list.append(row[0])
+		url = 'http://www.baidu.com/baidu?wd=%s&tn=json' %row[0].encode('utf-8')
+		url_list.append(url)
+		num += 1
 
-print 'begin'
-with conn:#拿关键词
-	cur = conn.cursor()
-	sql = 'select keyword from t_keyword order by rand() limit 20'
-	cur.execute(sql)
-	conn.commit
-conn.close()
-data = cur.fetchall()
-num = 0
-keyword_list = []
-url_list = []
-for row in data:#拼接url	
-	keyword_list.append(row[0])
-	url = 'http://www.baidu.com/baidu?wd=%s&tn=json' %row[0].encode('utf-8')
-	url_list.append(url)
-	num += 1
-totalThread  = 10#设置线程数
-gap = num/totalThread#设置步长
+def main():
+	print 'Begin'
+	data = getKeyword()
+	getUrl(data)
+	totalThread  = threadNum#设置线程数
+	global num	
+	global all	
+	global match	
+	gap = num/totalThread#设置步长	
+	thread_list = []
+	for line in range(0,num,gap):#10,5
+		t = threading.Thread(target=getRange,args=(line,line+gap))#注意最后一个线程中，list Index out of range，num要可以被totalThread整除
+		t.start()#循环开
+		thread_list.append(t)
+	for tt in thread_list:#循环join
+		tt.join()
+	#打印出有排名占比	
+	print match
+	print all
+	print '%.1f'%((float(match)/all)*100)+'%'
+	print 'Calculate Done...'
+	print 'Input AliyunDB Begin...'
+	inputAliyunDB(match,all)
+	print 'Input Done'
 mutex = threading.Lock()#设置锁
-thread_list = []
-for line in range(0,num,gap):
-	t = threading.Thread(target=getRange,args=(line,line+gap))#注意最后一个线程中，list Index out of range，num要可以被totalThread整除
-	t.start()#循环开
-	thread_list.append(t)
-for tt in thread_list:#循环join
-	tt.join()
-#打印出有排名占比	
-print match
-print all
-print '%.1f'%((float(match)/all)*100)+'%'
-print 'Calculate done...'
-print 'Input aliyunDB begin...'
-inputAliyunDB(match,all)
-print 'Input done'
+main()
