@@ -1,7 +1,7 @@
 # coding:utf-8
 author = 'heziliang'
 '''
-关键词保存在kw.txt，utf-8编码
+关键词保存在kw.txt	utf-8编码
 cmd运行python fengchao.py
 结果保存在result.txt
 异常词保存在fail.txt
@@ -11,10 +11,10 @@ from multiprocessing.dummy import Pool as ThreadPool
 reload(sys)
 sys.setdefaultencoding('utf-8')
 #更新COOKIE和TOKEN
-COOKIE = 'BAIDUID=D095FB08E006A9403A79F0EE0B687930:FG=1; BIDUPSID=D095FB08E006A9403A79F0EE0B687930; PSTM=1470556111; H_PS_PSSID=1451_17945_12097_20705; SIGNIN_UC=70a2711cf1d3d9b1a82d2f87d633bd8a02205688055; uc_login_unique=876229554d4b9cafc0fd835c59cd751c; __cas__st__3=a3d7336d133d73935cd12601ef62874b5d93ddbe52f3a7d37b5675e95b34e15e31c9dc78e646767f0e608de8; __cas__id__3=8048066; __cas__rn__=220568805; SAMPLING_USER_ID=8048066'
-TOKEN = 'a3d7336d133d73935cd12601ef62874b5d93ddbe52f3a7d37b5675e95b34e15e31c9dc78e646767f0e608de8'
+COOKIE = 'BAIDUID=CC26F4469D0AFABF0ABA69A59F2412D6:FG=1; BIDUPSID=CC26F4469D0AFABF0ABA69A59F2412D6; PSTM=1470708399; H_PS_PSSID=1429_17944_11836_20770; H_WISE_SIDS=100615_100037_104885_103550_107290_108015_104340_108051_104611_107515_107092_107694_108199_107943_108290_108084_107857_107960_107971_107917_108073_107805_107787_108298_107317_107242; plus_cv=1::m:af62f55b; SIGNIN_UC=70a2711cf1d3d9b1a82d2f87d633bd8a02207352566; uc_login_unique=08459e428ecadcfaf740a4df925f8864; __cas__st__3=68a8672b51c5b8cf9f2a55562cdb8437dc5b06252053bc3f1c8362686ec48b888379f40ee1a55449082054ae; __cas__id__3=8048066; __cas__rn__=220735256; SAMPLING_USER_ID=8048066'
+TOKEN = '68a8672b51c5b8cf9f2a55562cdb8437dc5b06252053bc3f1c8362686ec48b888379f40ee1a55449082054ae'
 USERID = '8048066'
-totalThread = 3
+totalThread = 5
 keyword_list = []
 #availableip_list = []
 #def getAvailableIp():
@@ -88,6 +88,7 @@ def analyseJsonData(i,jsonData):#分析json数据
 				print keyword_list[i]+' '+str(count)
 		except Exception,e:
 			print e
+			pass
 	else:
 		print 'The request has been rejected..'	
 		fail.write(keyword_list[i]+'\n')	
@@ -118,13 +119,10 @@ def main():	#主函数
 	'''
 start = time.clock()
 mutex = threading.Lock()
-myFile = open('result.txt',r'w+')
-fail = open('fail.txt',r'w+')
+myFile = open('result.txt',r'a+')
+fail = open('fail.txt',r'a+')
 main()
 myFile.close()
 fail.close()
 end = time.clock()
-print "runtime: %1.fs" % (end - start)
-
-
-
+print "RunTime: %1.fs" % (end - start)
