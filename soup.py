@@ -68,7 +68,7 @@ html = '''
 		<ol class = "dd">
         	<li><b>家居风水布局：</b><span><a target="_blank" href="http://home.fang.com/zhishi/fengshui/list108/">客厅风水</a><a target="_blank" href="http://home.fang.com/zhishi/fengshui/list109/">卧室风水</a><a target="_blank" href="http://home.fang.com/zhishi/fengshui/list110/">厨房风水</a><a target="_blank" href="http://home.fang.com/zhishi/fengshui/list111/">卫生间风水</a></span></li>
         	<li><b>装修风水学：</b><span><a target="_blank" href="http://home.fang.com/zhishi/fengshui/list112/">装修风水</a><a target="_blank" href="http://home.fang.com/zhishi/fengshui/list113/">桃花运风水</a><a target="_blank" href="http://home.fang.com/zhishi/fengshui/list114/">财运风水</a><a target="_blank" href="http://home.fang.com/zhishi/fengshui/list115/">办公室风水</a></span></li>
-        </ol>
+        </ol> 
     </div>
     <div id ="efg">
         myid=efg
