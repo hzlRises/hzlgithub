@@ -1,9 +1,10 @@
 #coding:utf-8
-import re
-import urllib2
+#kws.txt以utf-8编码
+import re,urllib2,time
 from time import ctime
 print 'Begin:%s' %ctime()
-f = open('result.txt',r'w')
+start = time.clock()
+f = open('result.txt',r'a+')
 file = open('kws.txt')
 for line in file:
 	line = line.strip()
@@ -14,4 +15,6 @@ for line in file:
 	f.writelines(line+'\n' for line in result)
 	print '%s done' %line
 f.close()
+end = time.clock()
 print 'End:%s' %ctime()
+print 'RunTime: '+'%1.f s' %(end-start)
