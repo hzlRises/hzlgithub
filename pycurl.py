@@ -47,7 +47,7 @@ headers = [
 		"Accept-Language:zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3",
 		"Connection:keep-alive",
 		"Host:www.baidu.com",
-		"User-Agent:%s"%get getUA()
+		"User-Agent:%s"%get getUA() 
 ]
 '''
 pycurl.NAMELOOKUP_TIME 域名解析时间
