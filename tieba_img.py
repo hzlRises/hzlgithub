@@ -1,9 +1,7 @@
 #coding:utf-8
 import urllib
 import re
-'''
-以前在贴吧看到美女图片，只能手动另存为到本地，现在....
-'''
+
 def imgGet():
 	html = urllib.urlopen('http://tieba.baidu.com/p/4578614900').read()
 	pattern = '<img class="BDE_Image" src="(.*?)"'
