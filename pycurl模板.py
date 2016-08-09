@@ -23,7 +23,7 @@ def getUA():
         "Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1; The World)",
         "Mozilla/5.0 (Windows NT 6.1; rv:2.0.1) Gecko/20100101 Firefox/4.0.1"
     ]
-    newUa = random.choice(uaList)
+    newUa = random.choice(uaList) 
     return newUa
 def getHtml(url,headers):
 	c = pycurl.Curl()							#通过curl方法构造一个对象
