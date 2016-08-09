@@ -53,4 +53,4 @@ with conn:
 	row_num = int(cur.rowcount)# 使用cur.rowcount获取结果集的条数
 	for i in range(row_num):
 		row = cur.fetchone()
-		print row[0],row[1]
+		print row[0],row[1] 
