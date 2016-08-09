@@ -6,4 +6,4 @@ def getVideo():
 	pattern = re.compile(r'data-mp4="(.*?)"')
 	return re.findall(pattern,html)
 for line in getVideo():
-	urllib.urlretrieve(line,'video/ %s'%line.split('/')[-1])
+	urllib.urlretrieve(line,'video/ %s'%line.split('/')[-1]) 
