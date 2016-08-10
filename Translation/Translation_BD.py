@@ -4,8 +4,8 @@ import md5,random,requests,json,sys
 reload(sys)
 sys.setdefaultencoding("utf-8")
 def translate(q,lang):
-	appid = '20160809000026521'
-	secretKey = 'jrOmXR_CoRvifHhy32fy' 
+	appid = ''#自己申请id
+	secretKey = '' #密钥
 	myurl = 'http://api.fanyi.baidu.com/api/trans/vip/translate'
 	fromLang = 'auto'
 	toLang = '%s' %lang
