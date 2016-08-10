@@ -4,7 +4,7 @@ import requests,urllib,time
 from bs4 import BeautifulSoup
 def callback(blocknum, blocksize, totalsize):  
     '''''回调函数 
-    @blocknum: 已经下载的数据块 
+    @blocknum: 已经下载的数据块
     @blocksize: 数据块的大小 
     @totalsize: 远程文件的大小 
     '''  
