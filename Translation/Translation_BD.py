@@ -1,4 +1,4 @@
-#coding=utf8 
+#coding=utf-8
 _author_ = 'heziliang'
 import md5,random,requests,json,sys
 reload(sys)
