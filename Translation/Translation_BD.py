@@ -25,7 +25,7 @@ def translate(q,lang):
 def main():
 	print 'Chinses2English Input 1, English2Chinses Input 2,Change Language Input 0'
 	while 1:				
-		cOre = raw_input('Please Input:1 or 2: ')
+		cOre = raw_input('Please Input:1 or 2: ') 
 		if(cOre == '1'):
 			while 1:	
 				print 'Please Input Chinses: '
