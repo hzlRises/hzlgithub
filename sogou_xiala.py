@@ -1,5 +1,8 @@
 #coding:utf-8
 #kws.txt以utf-8编码
+'''
+author = 'heziliang'
+'''
 import re,urllib2,time
 from time import ctime
 print 'Begin:%s' %ctime()
