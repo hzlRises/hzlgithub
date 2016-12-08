@@ -7,8 +7,8 @@ def getJson(keyword):
 	url = 'http://fanyi.youdao.com/openapi.do'
 	payload = {
 	'q':'%s' %keyword,
-	'keyfrom':'heziliang',
-	'key':'648806865',
+	'keyfrom':'',
+	'key':'',
 	'type':'data',
 	'doctype':'json',
 	'version':'1.1',
