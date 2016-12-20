@@ -1,5 +1,5 @@
 #coding:utf-8
-author == 'heziliang'
+author = 'heziliang'
 import socket,threading,random,requests,pycurl
 from multiprocessing.dummy import Pool as ThreadPool
 from bs4 import BeautifulSoup
