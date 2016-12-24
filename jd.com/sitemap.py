@@ -2,7 +2,7 @@ import os,datetime
 import sys
 reload(sys)
 sys.setdefaultencoding('utf-8')	
-
+author = 'heziliang'
 item = 1
 f = open('item_%s.xml' % item, r'a+')
   
