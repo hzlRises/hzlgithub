@@ -1,4 +1,5 @@
 #coding:utf-8
+author = 'heziliang'
 import requests,re,time,string
 from bs4 import BeautifulSoup
 headers = {
