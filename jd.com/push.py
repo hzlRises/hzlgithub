@@ -22,5 +22,5 @@ for i in range(0,num+1):
 	params = {'site':'www.jd.com','token':'***','type':'original'}
 	r = requests.post(url,params=params,headers=headers,data=open('%s.txt'%i,r'rb').read())
 	print r.content
-	time.sleep(1)
+	time.sleep(10)
 print 'The data push is complete'
