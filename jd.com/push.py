@@ -20,7 +20,7 @@ for i in range(0,num+1):
 	headers = {'Content-Type':'text/plain'}
 	url = 'http://data.zz.baidu.com/urls'
 	params = {'site':'www.jd.com','token':'***','type':'original'}
-	r = requests.post(url,params=params,headers=headers,data=open('%s.txt'%num,r'rb').read())
+	r = requests.post(url,params=params,headers=headers,data=open('%s.txt'%i,r'rb').read())
 	print r.content
 	time.sleep(1)
 print 'The data push is complete'
