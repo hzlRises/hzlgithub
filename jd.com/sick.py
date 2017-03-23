@@ -1,6 +1,33 @@
 import ahocorasick
 import time
 def main():
+	t1 = time.time()
+	A = ahocorasick.Automaton()
+	with open("blackword.txt",'r') as fp:
+		for line in fp:
+			bkw = line.strip()
+			A.add_word(bkw,(1,bkw))
+	A.make_automaton()
+	g1 = open("result_dangdang.txt", 'a+')
+	for line in open("dangdang.txt"):
+		for k,(i,t) in A.iter(line.strip()):
+			print line.strip()+t
+			g1.write(line.strip()+":"+t+"\n")
+	g1.close()
+	t2 = time.time()
+	print "cost time is ", t2 - t1
+main()
+
+
+
+
+
+
+
+'''
+import ahocorasick
+import time
+def main():
     t1 = time.time()
     A = ahocorasick.Automaton()
     with open("D:\\seo-dev\\blackword\\blackword.properties", 'r') as fp:
@@ -43,3 +70,4 @@ def main():
     return
 
 main()
+'''
