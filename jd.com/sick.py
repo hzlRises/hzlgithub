@@ -3,10 +3,12 @@ import time
 def main():
 	t1 = time.time()
 	A = ahocorasick.Automaton()
+	#向trie树中添加单词
 	with open("blackword.txt",'r') as fp:
 		for line in fp:
 			bkw = line.strip()
 			A.add_word(bkw,(1,bkw))
+	#将trie树转化为Aho-Corasick自动机
 	A.make_automaton()
 	g1 = open("result_dangdang.txt", 'a+')
 	for line in open("dangdang.txt"):
@@ -17,11 +19,21 @@ def main():
 	t2 = time.time()
 	print "cost time is ", t2 - t1
 main()
+'''
+import ahocorasick
+A = ahocorasick.Automaton()
+for index,word in enumerate("he her hers she".split()):
+    A.add_word(word, (index, word))
+A.make_automaton()
+for item in A.iter("_yywwt_"):
+    print item
+#(2,(0,'he'))
+#(3,(1,'her'))
+#(4, (2, 'hers'))
+#(6, (3, 'she'))
+#(6, (0, 'he'))
 
-
-
-
-
+'''
 
 
 '''
