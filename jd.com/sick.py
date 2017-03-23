@@ -1,5 +1,6 @@
 import ahocorasick
 import time
+#参考http://blog.csdn.net/pirage/article/details/51657178
 def main():
 	t1 = time.time()
 	A = ahocorasick.Automaton()
