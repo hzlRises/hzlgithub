@@ -5,13 +5,16 @@ from xml.etree import ElementTree as ET
 import smtplib
 from email.mime.text import MIMEText
 from email.header import Header
-
+mail_port = 25
 mail_host = 'smtp.163.com'
-mail_user = ''
-mail_pass = ''
-mail_to = ''
 
+mail_user = '..'
 
+mail_pass = '..'
+
+mail_to = '..'
+
+cityId = 101010100#北京
 
 def getTag(xmlFile):
 	#城市
@@ -107,17 +110,18 @@ def getZhishu():
 
 def sendMail(content):
 	msg = MIMEText(content,'html','utf-8')
-	msg['Subject'] = Header(u'娜娜专属天气预报','utf-8')
+	msg['Subject'] = Header(u'专属天气预报','utf-8')
 	msg['From'] = u'亮仔'#mail_user
+#	msg['To'] = ','.join(mail_to)
 	msg['To'] = mail_to
 	s = smtplib.SMTP()
-	s.connect(mail_host)
+	s.connect(mail_host,mail_port)
 	s.login(mail_user, mail_pass)
 	s.sendmail(mail_user,mail_to, msg.as_string())
 	s.close()
 
 if __name__ == "__main__":
-	url = 'http://wthrcdn.etouch.cn/WeatherApi?citykey=101010100'
+	url = 'http://wthrcdn.etouch.cn/WeatherApi?citykey=%s'%cityId
 	r = requests.get(url)
 	with open('aa.xml',r'w') as my:
 		my.write(str(r.content))
@@ -129,30 +133,61 @@ if __name__ == "__main__":
 	allContent_list = list(getTag(domtree)+getAqi()+getForecast()+getZhishu())
 	sendMail(
 	'\
-	city:%s,updatetime:%s,wendu:%s,fengli:%s,fengxiang:%s,shidu:%s,sunrise:%s,sunset:%s<br />\
-	aqi:%s,quality:%s,pm2.5:%s,suggestion:%s<br />\
-	\
-	--------------%s,%s,%s--------------<br />\
-	day:%s,%s,%s<br />\
-	night:%s,%s,%s<br />\
-	--------------%s,%s,%s--------------<br />\
-	day:%s,%s,%s<br />\
-	night:%s,%s,%s<br />\
-		--------------%s,%s,%s--------------<br />\
-	day:%s,%s,%s<br />\
-	night:%s,%s,%s<br />\
-	<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />\
-	%s:%s,%s<br />'
+	<table border="1" text-align:center;>\
+		<tr style="background:#D5E9FA">\
+			<td><strong>City:%s,Updatetime:%s,Wendu:%s</strong></td>\
+		</tr>\
+		<tr>\
+			<td><strong>Fengli:%s,Fengxiang:%s</strong></td>\
+		</tr>\
+		<tr style="background:#D5E9FA">\
+			<td><strong>Shidu:%s</strong></td>\
+		</tr>\
+		<tr>\
+			<td><strong>Sunrise:%s,Sunset:%s</strong></td>\
+		</tr>\
+		<tr style="background:#D5E9FA">\
+			<td><strong>Aqi:%s,Quality:%s,PM2.5:%s</strong></td>\
+		</tr>\
+		<tr>\
+			<td><strong>Suggestion:%s</strong></td>\
+		</tr>\
+		<tr><td><table border="1">\
+		<tr style="background:#D5E9FA">\
+		<td>Date</td>\
+		<td>Day</td>\
+		<td>Night</td>\
+		</tr>\
+		<tr>\
+			<td>%s,%s,%s</td>\
+			<td>%s,%s,%s</td>\
+			<td>%s,%s,%s</td>\
+		</tr>\
+		<tr>\
+			<td>%s,%s,%s</td>\
+			<td>%s,%s,%s</td>\
+			<td>%s,%s,%s</td>\
+		</tr>\
+		<tr>\
+			<td>%s,%s,%s</td>\
+			<td>%s,%s,%s</td>\
+			<td>%s,%s,%s</td>\
+		</tr></table></td></tr>\
+	<tr><td>\
+	1 %s:%s,%s<br />\
+	2 %s:%s,%s<br />\
+	3 %s:%s,%s<br />\
+	4 %s:%s,%s<br />\
+	5 %s:%s,%s<br />\
+	6 %s:%s,%s<br />\
+	7 %s:%s,%s<br />\
+	8 %s:%s,%s<br />\
+	9 %s:%s,%s<br />\
+	10 %s:%s,%s<br />\
+	11 %s:%s,%s<br />\
+	</td></tr>\
+	</table>\
+	'
 	%(
 	#head
 	allContent_list[0],
