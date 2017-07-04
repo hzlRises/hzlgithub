@@ -4,6 +4,8 @@ import string
 from bs4 import BeautifulSoup
 reload(sys)
 sys.setdefaultencoding('utf8')
+
+
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Encoding": "gzip, deflate, sdch",
@@ -16,7 +18,7 @@ headers = {
 }
 
 def main():
-	for letter in string.uppercase:
+	for letter in ['I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z']:
 		print letter
 		url = 'http://www.kongfz.com/writer/%s_1/'%letter
 		r = requests.get(url,headers=headers)
@@ -32,16 +34,22 @@ def main():
 		#以上只是确定某个字母开头的最大页数
 		for i in range(1,int(pageNum)+1):#20886
 			url = 'http://www.kongfz.com/writer/%s_%s/'%(letter,i)
-			r = requests.get(url,headers=headers)
-			s = BeautifulSoup(r.content,"lxml")
-			writer = s.find_all('img')
-			for i in writer:
-				print i.get('alt')
-				if u'孔夫子旧书网' in i.get('alt'):
-					pass
-				else:
-					with open('%s.txt'%letter,r'a+') as my:
-						my.write(i.get('alt')+'\n')
-			time.sleep(3)
+			try:
+				r = requests.get(url,headers=headers,timeout=10)
+				s = BeautifulSoup(r.content,"lxml")
+				writer = s.find_all('img')
+				for j in writer:
+					print j.get('alt')
+					if u'孔夫子旧书网' in j.get('alt'):
+						pass
+					else:
+						with open('%s.txt'%letter,r'a+') as my:
+							my.write(j.get('alt')+'\n')
+				time.sleep(1)			
+			except Exception,e:
+				print e
+				time.sleep(60)
+				continue
+			print i
 		time.sleep(60)
 main()
