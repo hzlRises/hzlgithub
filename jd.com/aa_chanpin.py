@@ -4,7 +4,7 @@ import requests,sys,time,re
 from bs4 import BeautifulSoup
 reload(sys)
 sys.setdefaultencoding('utf8')
-author = 'TSBC'
+author = 'heziliang'
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Encoding": "gzip, deflate, sdch",
