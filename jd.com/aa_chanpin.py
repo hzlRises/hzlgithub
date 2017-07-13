@@ -4,6 +4,7 @@ import requests,sys,time,re
 from bs4 import BeautifulSoup
 reload(sys)
 sys.setdefaultencoding('utf8')
+author = 'TSBC'
 headers = {
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
     "Accept-Encoding": "gzip, deflate, sdch",
@@ -31,13 +32,12 @@ def getCountnum(kw):
 		with open('result_2.txt',r'a+') as my:#结果存放文件
 			my.write(kw+','+resCount+'\n')
 		successNUm += 1
-		print successNUm
 	except Exception,e:
 		with open('fail_2.txt',r'a+') as my:#异常关键词文件
 			my.write(kw+'\n')
 		failNum += 1
-		print failNum
 		print e 
+	print 'successNUm,failNum:'+successNUm+','+failNum
 	
 def main():
 	for line in open('2.txt'):#
