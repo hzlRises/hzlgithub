@@ -72,7 +72,7 @@ sys.setdefaultencoding('utf-8')
 def main():
 	for line in open('kwss.txt'):			
 		url = 'http://custom.p-search.jd.local'
-		load = {'key':'%s'%line.strip(),'pagesize':'1','qp_disable':'no','client':'1459921095675'}#,'debug':'yes'
+		load = {'key':'%s'%line.strip(),'pagesize':'****','qp_disable':'***','client':'****'}#,'debug':'yes'
 		#请求
 		try:
 			r = requests.get(url,params=load)
