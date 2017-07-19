@@ -60,4 +60,52 @@ with conn:
 	main()
 	f.close()
 #	conn.close()
+
+
+'''
+#coding:utf-8
+import requests,sys,json,MySQLdb
+from bs4 import BeautifulSoup
+reload(sys)
+sys.setdefaultencoding('utf-8')
+#conn = MySQLdb.connect('localhost','root','','fenlei',charset='utf8')
+def main():
+	for line in open('kwss.txt'):			
+		url = 'http://custom.p-search.jd.local'
+		load = {'key':'%s'%line.strip(),'pagesize':'1','qp_disable':'no','client':'1459921095675'}#,'debug':'yes'
+		#请求
+		try:
+			r = requests.get(url,params=load)
+			data = r.content.decode('gbk').encode('utf-8')#还是编码问题
+			data = json.loads(data)
+		except Exception,e:
+			print e
+			with open('fail.txt',r'a+') as my:
+				my.write(line.strip()+'\n')
+			pass
+		#解析
+		try:
+			fid = data["Paragraph"][0]["cid1"]
+			sid = data["Paragraph"][0]["cid2"]
+			tid = data["Paragraph"][0]["catid"]						
+		except Exception,e:
+			print e
+			#如果关键词的分类返回结果为null，则此次循环结束
+			continue
+		try:
+			#f.write(line.strip().decode('gbk').encode('utf-8')+':'+row1[0]+','+row2[0]+','+row3[0]+'\n')
+			f.write(line.strip().decode('gbk').encode('utf-8')+':'+fid+','+sid+','+tid+'\n')
+			print line.strip(),fid,sid,tid
+		except Exception,e:
+			print e					
+f = open('result_fenlei.txt',r'a+')
+main()
+f.close()
+#	conn.close()
 		
+
+
+
+'''
+
+
