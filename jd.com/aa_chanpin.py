@@ -65,6 +65,7 @@ if __name__ == '__main__':
 	
 	
 '''
+#品牌+三级分类关键词
 #coding:utf-8
 #处理关键词特殊字符
 import requests,sys,time,re
@@ -176,6 +177,107 @@ def main():
 
 if __name__ == '__main__':
 	main()
+
+
+'''
+
+'''
+#品牌+二级分类关键词
+#coding:utf-8
+#处理关键词特殊字符
+import requests,sys,time,re,urllib2,pycurl,StringIO
+from bs4 import BeautifulSoup
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.header import Header
+from email.mime.application import MIMEApplication
+from email.mime.base import MIMEBase
+from email import Encoders
+#reload(sys)
+#sys.setdefaultencoding('utf8')
+author = 'heziliang'
+headers = {
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
+    "Accept-Encoding": "gzip, deflate, sdch",
+    "Accept-Language": "zh-CN,zh;q=0.8",
+    "Connection": "keep-alive",
+    "Cookie": "__jda=122270672.1496654831191591020064.1496654831.1500457135.1500463730.40; __jdu=1496654831191591020064; xtest=2217.8731.604.cf6b6759; mx=0_X; ipLocation=%u5317%u4EAC; __jdv=122270672|baidu|-|organic|not set|1500351606990; dmpjs=dmp-d100486c43717be8c7f2c62e02abd33a0585609; user-key=40f66c71-d1f5-40fe-b421-26b0ae7cbeba; cn=0; __jdc=122270672; sso.jd.com=bae981b6ad46402abcfa85726f5e96ba; __jdb=122270672.1.1496654831191591020064|40.1500463730",
+    "Host": "search.jd.com",
+	"Referer":"https://www.jd.com/",
+    "Upgrade-Insecure-Requests": "1",
+    "User-Agent": "Mozilla/5.0 (Windows NT 6.1; WOW64; rv:54.0) Gecko/20100101 Firefox/54.0",
+}
+num = 0
+def getCountnum(kw):
+	global num
+	#请求搜索
+	try:
+		url = 'https://search.jd.com/Search?keyword=%s&enc=utf-8'%kw
+		r = requests.get(url,headers=headers,timeout=60)
+		s = BeautifulSoup(r.content,'lxml')
+		resCount = s.find('span',attrs={'id':'J_resCount'}).get_text()
+		#返回商品数
+		if '+' in str(resCount):
+			resCount = resCount.replace('+','')
+		#返回商品第一个sku
+		firstSku = s.find('li',attrs={'class':'gl-item'}).get('data-sku')
+	except Exception,e:
+		print e
+	try:
+		url_2 = 'https://item.jd.com/%s.html'%firstSku
+		c = pycurl.Curl()
+		c.setopt(pycurl.URL,url_2)
+		c.fp = StringIO.StringIO()
+		c.setopt(c.WRITEFUNCTION, c.fp.write)
+		c.perform()
+		html = c.fp.getvalue()
+		
+		
+		f_leimu = re.search(r'mbNav-1">(.*?)</a></div>',html)
+		f_leimu = re.sub('mbNav-1">','',f_leimu.group(0))
+		f_leimu = re.sub('</a></div>','',f_leimu)
+
+		s_leimu = re.search(r'mbNav-2">(.*?)</a></div>',html)
+		s_leimu = re.sub('mbNav-2">','',s_leimu.group(0))
+		s_leimu = re.sub('</a></div>','',s_leimu)
+		
+		
+		t_leimu = re.search(r'mbNav-3">(.*?)</a></div>',html)
+		t_leimu = re.sub('mbNav-3">','',t_leimu.group(0))
+		t_leimu = re.sub('</a></div>','',t_leimu)
+		
+	except Exception,e:
+		print e
+	try:
+		with open('result.txt',r'a+') as my:
+			my.write(kw.decode('utf-8').encode('gbk')+','+f_leimu+','+s_leimu+','+t_leimu+','+str(resCount)+'\n')
+		num += 1
+		print num
+	except Exception,e:
+		print e
+def main():
+	for line in open('sid_kw.txt'):#
+		kw = line.strip()
+		#处理字符
+		reg = re.compile(r'(\(.*?\))')
+		reg2 = re.compile(r'（.*?）')
+		reg3 = re.compile(r'(\(.*?）)')
+		reg4 = re.compile(r'(（.*?\))')
+		reg5 = re.compile(r'\&')
+		kw = re.sub(reg,'',kw)#两边都是英文括号
+		kw = re.sub(reg2,'',kw)#两边都是中文括号
+		kw = re.sub(reg3,'',kw)#左边英文，右边中文
+		kw = re.sub(reg4,'',kw)#左边中文，右边英文
+		kw = re.sub(reg5,'',kw)#&符号
+		kw = kw.upper()#小写变大写
+		getCountnum(kw)
+		time.sleep(1)
+if __name__ == '__main__':
+	main()
+
+
+
 
 
 '''
