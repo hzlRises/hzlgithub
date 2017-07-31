@@ -71,33 +71,29 @@ if __name__ == '__main__':
 #处理阿里关键词2500万
 import re
 def main():
-#	f1 = open('reg.txt')
-
-#	f = open('result_qq.txt',r'a+')
-	for line in open('0.txt'):
-		kw = line.strip()
-		reg = re.search(r'(\d+)',kw)#含数字
-		reg2 = re.search(r'[a-zA-Z]+',kw)#字母
-		#特殊字符
-		reg3 = re.search(r'>|<|\+|=|-|）|（|\)|\(|&|%|……|\^|￥|\$|#|@|】|【| |-|\.|\*|amp|nbsp|;|\/|\]|\[|{|}|：|；|》|《|、|:|。',kw)
-		if reg or reg2 or reg3:
-			pass
-		else:
-			for black in open('blackkw.txt'):#遍历黑名单关键词，依次匹配
-				bkw = black.strip()
-				if bkw in kw:#匹配上黑名单保存
-					with open('re_hmd.txt',r'a+') as my:
-						my.write(kw+','+bkw+'\n')
-#				else:
-#					f.write(kw+'\n')#这里只想要没有匹配到黑名单的关键词
+	num = 0
+	for i in range(0,28):
+		print i
+		for line in open('%s.txt'%i):
+			kw = line.strip()
+			reg = re.search(r'(\d+)',kw)#含数字
+			reg2 = re.search(r'[a-zA-Z]+',kw)#字母
+			#特殊字符
+			reg3 = re.search(r'>|<|\+|=|-|）|（|\)|\(|&|%|……|\^|￥|\$|#|@|】|【| |-|\.|\*|amp|nbsp|;|\/|\]|\[|{|}|：|；|》|《|、|:|。',kw)
+			if reg or reg2 or reg3:
+				pass
+			else:
+				for black in open('blackkw.txt'):#遍历黑名单关键词，依次匹配
+					bkw = black.strip()
+					if bkw in kw:#匹配上黑名单保存
+						with open('result_%s.txt'%i,r'a+') as my:
+							my.write(kw+','+bkw+'\n')
+							break
 		
-#	f.close()
-#	f1.close()
+		i += 1
 	
 if __name__ == '__main__':
 	main()
-	
-	
 	
 '''
 
