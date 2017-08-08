@@ -1,5 +1,5 @@
 #coding:utf-8
-import requests,sys,re,pycurl,StringIO
+import requests,sys,re,pycurl,StringIO,time
 from bs4 import BeautifulSoup
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -17,23 +17,34 @@ headers = {
 }
 
 
-def getHtml(k,url):#获取单页链接
+def getHtml(k,url,num,kw_num):#获取单页链接
+	pageNum = 1#每页中的排名
 	r = requests.get(url,headers=headers)
 	s = BeautifulSoup(r.content,"lxml")
 	ask_all = s.find_all('a',attrs={'class':'ti'})
 	for link in ask_all:
-		print link.get('href'),link.get_text()
+#		print link.get('href'),link.get_text()
 		with open('links.txt',r'a+') as my:
-			my.write(k+','+link.get('href')+'\n')
+			#关键词、关键词id、页数、排名、标题、详情页链接.decode('utf8')
+			my.write(k+'|'+str(num)+'|'+str(kw_num)+'|'+str(pageNum)+'|'+link.get_text()+'|'+link.get('href')+'\n')
+		pageNum += 1
 
 
 
 def main():
+	num = 1#关键词id
 	for k in open('kw.txt'):
-		for i in range(0,1):#每个关键词请求页数
-			url = 'https://zhidao.baidu.com/search?word=%s&ie=gbk&site=-1&sites=0&date=0&pn=%s'%(k.strip(),i*10)
-			getHtml(k,url)
-
+		try:
+			kw_num = 1#每个关键词页数
+			for i in range(0,10):#每个关键词请求页数
+				url = 'https://zhidao.baidu.com/search?word=%s&ie=gbk&site=-1&sites=0&date=0&pn=%s'%(k.strip(),i*10)
+				getHtml(k.strip(),url,num,kw_num)
+				time.sleep(0.5)
+				kw_num += 1
+		except Exception,e:
+			print e
+		num += 1
+		print num
 if __name__ == '__main__':
 	main()
 
