@@ -97,7 +97,38 @@ if __name__ == '__main__':
 	
 '''
 
+'''
+#coding:utf-8
+import ahocorasick
+import time,re
+def main():
+	t1 = time.time()
+	houzhui = 1
+	A = ahocorasick.Automaton()
+	with open("blackkw.txt",'r') as fp:#黑名称关键词
+		for line in fp:
+			bkw = line.strip()
+			A.add_word(bkw,(1,bkw)) 
+	A.make_automaton()
+	g1 = open("result_hmd_%s.txt"%houzhui, r'a+')#结果存放
+	for line in open("ali_words_%s.txt"%houzhui):#需要处理的文件
+		kw = line.strip()
+		reg = re.search(r'(\d+)',kw)
+		reg2 = re.search(r'[a-zA-Z]+',kw)
+		reg3 = re.search(r'>|<|\+|=|-|）|（|\)|\(|&|%|……|\^|￥|\$|#|@|】|【| |-|\.|\*|amp|nbsp|;|\/|\]|\[|{|}|：|；|》|《|、|:|。',kw)
+		if reg or reg2 or reg3:#如果是数字、字母或者特殊字符，单独保存起来
+			with open('result_szzm_tszf_%s.txt'%houzhui,r'a+') as you:
+				you.write(kw+'\n')
+		else:
+			for k,(i,t) in A.iter(kw):
+				print kw+t
+				g1.write(kw+","+t+"\n")
+	g1.close()
+	t2 = time.time()
+	print "cost time is ", t2 - t1
+main()
 
+'''
 
 
 
