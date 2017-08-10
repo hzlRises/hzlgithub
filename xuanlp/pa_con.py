@@ -1,5 +1,5 @@
 #coding:utf-8
-import requests,sys,re,pycurl,StringIO,time
+import requests,sys,re,pycurl,StringIO,time,xlrd,xlwt
 from bs4 import BeautifulSoup
 reload(sys)
 sys.setdefaultencoding('utf8')
@@ -16,49 +16,46 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36",
 }
 
-
 def main():
 	f = open('re_con.txt',r'a+')
 	for k in open('linkss.txt'):
-		url = k.split('|')[5]
+		url = k.split('|')[2]
 		print url
 		r = requests.get(url,headers=headers)
 		s = BeautifulSoup(r.content,"lxml")
 		content = s.find('pre',attrs={'class':'best-text mb-10'})
 		if content:#最佳答案
-			f.write(content.get_text().strip()+'|')
-		other_answer = s.find_all('span',attrs={'class':'con'})
-		if other_answer:#其他答案
-			for ot in other_answer:
-				f.write(ot.get_text().strip()+'|')
+			f.write(k.strip()+'|'+re.(r'"\.*"',str(content)))#还没解决？？？？？
+#		other_answer = s.find_all('span',attrs={'class':'con'})
+#		if other_answer:#其他答案
+#			for ot in other_answer:
+#				f.write(ot.get_text().strip()+'|')
 		f.write('\n')
-		f.close()
+	f.close()
 if __name__ == '__main__':
 	main()
-
-
-
 
 
 '''
 def main():
-	for k in open('linkss.txt'):
-		url = k.split('|')[5]
-		print url
-		r = requests.get(url,headers=headers)
+	data = xlrd.open_workbook('xuanlp.xlsx')
+	table = data.sheets()[3]#第三个表
+	nrows = table.nrows#获取行数
+	wb = xlwt.Workbook()
+	sheet = wb.add_sheet('baidu')
+	
+	for i in range(nrows):
+		print table.row_values(i)[2]#第三列
+		r = requests.get(table.row_values(i)[2],headers=headers)
 		s = BeautifulSoup(r.content,"lxml")
-		content = s.find('pre',attrs={'class':'best-text mb-10'})
-		if content:#最佳答案
-			with open('re_con.txt',r'a+') as my:
-				my.write(content.get_text()+,)
+		best_content = s.find('pre',attrs={'class':'best-text mb-10'})
+		if best_content:
+			sheet.write(i,3,best_content.get_text().strip()+'|')
 		other_answer = s.find_all('span',attrs={'class':'con'})
-		if other_answer:#其他答案
-			for ot in other_answer:
-				with open('re_con.txt',r'a+') as you:
-					you.write(ot.get_text()+'|')
-		with open('re_con.txt',r'a+') as myyou:
-			myyou.write('\n')
+#		if other_answer:
+#			for ot in other_answer:
+#				sheet.write(i,3,ot.get_text().strip()+'|')
+			
 if __name__ == '__main__':
 	main()
 '''
-
