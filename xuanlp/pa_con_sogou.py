@@ -23,7 +23,10 @@ def main():
 		countnum = 1
 		for k in open('links_sogou.txt'):
 			con_str = ''
-			url = k.split('|')[2]
+			try:
+				url = k.split('|')[2]
+			except Exception,e:
+				print e
 #			print url
 			try:
 				r = requests.get(url,headers=headers,timeout=60)
