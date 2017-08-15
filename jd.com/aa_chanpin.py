@@ -350,9 +350,9 @@ def getCountnum(i,kw):#文件后缀、关键词
 	print 'successNUm,failNum:'+str(successNUm)+','+str(failNum)
 	
 mail_host = 'smtp.163.com'
-mail_user = 'hzl_789789@163.com'
-mail_pass = '201508241653hzl'
-mail_to = 'heziliang@jd.com'
+mail_user = ''
+mail_pass = ''
+mail_to = ''
 
 #发送附件邮件
 def sendMail(rank):
