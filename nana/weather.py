@@ -121,7 +121,7 @@ def sendMail(content):
 	s.close()
 
 if __name__ == "__main__":
-	url = 'http://wthrcdn.etouch.cn/WeatherApi?citykey=%s'%cityId
+	url = 'http://wthrcdn.etouch.cn/WeatherApi?citykey=%s'%cityId#xiamen101230201   bj101010100
 	r = requests.get(url)
 	with open('aa.xml',r'w') as my:
 		my.write(str(r.content))
