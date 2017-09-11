@@ -36,7 +36,7 @@ def main():
 			str_list.append(img.get('src'))
 		
 		with open('re_img.txt',r'a+') as my:
-			my.write(url.strip()+','+",".join(str_list)+'\n')
+			my.write(url.strip()+'|'+",".join(str_list)+'\n')
 		print url.strip()
 if __name__ == '__main__':
 	main()
