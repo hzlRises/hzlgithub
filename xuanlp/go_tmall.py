@@ -15,39 +15,41 @@ headers = {
     "User-Agent": "Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36",
 }
 #https://list.tmall.com/search_product.htm?&smAreaId=110100&smToken=d5ab69fafe104a119d1b68cf5dee8e2b&smSign=tynCTnJ2%2BacN%2F4nGJImRRQ%3D%3D
+#&smToken=&smSign=
 def main():
 	for kw in open('kw_tmall.txt'):
 		for page in range(5):
+			time.sleep(1)
 			page = page * 60
 			url = 'https://list.tmall.com/search_product.htm'
 			payload = {
 			'q':'%s'%kw.strip(),
 			's':'%s'%page,
-			'spm':'a220m.1000858.0.0.4c637810i4favJ',
+			'spm':'a220m.1000858.a2227oh.d100',
 			'sort':'d',
-			'smToken':'d5ab69fafe104a119d1b68cf5dee8e2b',
+			'smToken':'f00c864b1da14df796fd2805498c65af',
 			'cat':'50036568',
 			'style':'g',
-			'from':'mallfp..pc_1_searchbutton',
+			'from':'.list.pc_1_searchbutton',
 			'smAreaId':'110100',
-			'smSign':'tynCTnJ2%2BacN%2F4nGJImRRQ%3D%3D',
+			'smSign':'6eD%2BBFqGQ7CwR0gGpXh4HA%3D%3D',
 			}
 			r = requests.get(url,params=payload,headers=headers,timeout=60)
 			s = BeautifulSoup(r.content,"lxml")
 			divtag = s.find_all('div',attrs={'class':'product-iWrap'})
 			for at in divtag:
 				sku = at.find('a').get('href')#商品链接
-				if at.find('img').get('src'):#这块应该是图片延时加载，导致img标签属性不一致，需要判断
+				if at.find('img').get('src'):#图片延时加载，导致img标签属性不一致，需要判断
 					img = at.find('img').get('src')
 				else:
 					img = at.find('img').get('data-ks-lazyload')
 				price = at.find('em').get('title')#价格
 				title = at.find('p',attrs={"class":"productTitle"}).find('a').get('title')
 				print sku,img,price,title
+				with open('re_tmall.txt',r'a+') as my:
+					my.write(kw.strip()+'|'+sku+'|'+'|'+price+'|'+title+'\n')
 			break
 		break
-
-
 	
 if __name__ == '__main__':
 	main()
