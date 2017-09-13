@@ -47,7 +47,7 @@ def main():
 				title = at.find('p',attrs={"class":"productTitle"}).find('a').get('title')
 				print sku,img,price,title
 				with open('re_tmall.txt',r'a+') as my:
-					my.write(kw.strip()+'|'+sku+'|'+'|'+price+'|'+title+'\n')
+					my.write(kw.strip()+'|'+sku+'|'+price+'|'+title+'\n')
 			break
 		break
 	
