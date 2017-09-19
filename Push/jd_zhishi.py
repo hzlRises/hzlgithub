@@ -14,7 +14,7 @@ def main():
 
 	
 	#把xml中的数据拿下来，并和现有的数据去重后，留下的数据单独放到一个文件，并且追加到所有的url txt里
-	url = 'http://yp.jd.com/sitemap/pinpai_0.xml'
+	url = 'http://yp.jd.com/***/***.xml'
 	num = 0
 	r = requests.get(url)
 	zhishi_url = re.findall(r'<loc>(.*?)</loc>',r.content)
