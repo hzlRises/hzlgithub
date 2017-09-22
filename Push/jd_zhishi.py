@@ -68,9 +68,10 @@ def main():
 	print 'Finish!!!'
 
 if __name__ == '__main__':
-	main()
-
-
+	while True:
+		current_time = time.localtime(time.time())
+		if((current_time.tm_hour == 18) and (current_time.tm_min == 0) and (current_time.tm_sec == 0)):
+			main()
 
 
 
