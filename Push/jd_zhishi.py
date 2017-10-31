@@ -14,10 +14,16 @@ def main():
 
 	
 	#把xml中的数据拿下来，并和现有的数据去重后，留下的数据单独放到一个文件，并且追加到所有的url txt里
-	url = 'http://yp.jd.com/00/00_0.xml'
+	zhishi_url = []
 	
-	r = requests.get(url)
-	zhishi_url = re.findall(r'<loc>(.*?)</loc>',r.content)
+	for i in range(0,2):
+		url = 'http://yp.jd.com/sitemap/zhishi_%s.xml'%i
+		r = requests.get(url)
+		zhishi_url_ = re.findall(r'<loc>(.*?)</loc>',r.content)
+		for url in zhishi_url_:
+			zhishi_url.append(url)
+	
+	
 	has_push_list = [url.strip() for url in open('all_url.txt')]
 	f = open('all_url.txt',r'a+')#所有的url
 	f_ytd = open('yesterday_0.txt',r'w+')#昨天发布的文章url
