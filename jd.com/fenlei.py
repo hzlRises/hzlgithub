@@ -71,7 +71,7 @@ sys.setdefaultencoding('utf-8')
 #conn = MySQLdb.connect('localhost','root','','fenlei',charset='utf8')
 def main():
 	for line in open('kwss.txt'):			
-		url = 'http://custom.p-search.jd.local'
+		url = '000'
 		load = {'key':'%s'%line.strip(),'pagesize':'****','qp_disable':'***','client':'****'}#,'debug':'yes'
 		#请求
 		try:
