@@ -55,7 +55,7 @@ def main():
 			print i,num
 		with open('C:\\Users\heziliang\\1_znmb_index\\mulu\\done.txt',r'a+') as my:
 			now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
-			my.write(i+','+now+'\n')
+			my.write(str(i)+','+now+'\n')
 			
 if __name__ == '__main__':
 	main()
