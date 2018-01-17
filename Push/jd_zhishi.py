@@ -69,7 +69,7 @@ def main():
 			
 			#熊掌号
 			params_xzh = {'appid':'1584638868980905','token':'99XYR1EO50dhybGu','type':'realtime'}
-			r_xzh = requests.post(url,params=params_m,headers=headers,data=open('yesterday_m_%s.txt'%i,r'rb').read())
+			r_xzh = requests.post(url,params=params_xzh,headers=headers,data=open('yesterday_m_%s.txt'%i,r'rb').read())
 			
 			
 			print 'PC:'+r.content+','+'M:'+r_m.content+','+'XZH:'+r_xzh.content
