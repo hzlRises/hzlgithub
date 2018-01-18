@@ -68,7 +68,7 @@ def main():
 			r_m = requests.post(url,params=params_m,headers=headers,data=open('yesterday_m_%s.txt'%i,r'rb').read())
 			
 			#熊掌号
-			params_xzh = {'appid':'1584638868980905','token':'99XYR1EO50dhybGu','type':'realtime'}
+			params_xzh = {'appid':'','token':'','type':''}
 			r_xzh = requests.post(url,params=params_xzh,headers=headers,data=open('yesterday_m_%s.txt'%i,r'rb').read())
 			
 			
@@ -86,6 +86,101 @@ if __name__ == '__main__':
 		current_time = time.localtime(time.time())
 		if((current_time.tm_hour == 18) and (current_time.tm_min == 0) and (current_time.tm_sec == 0)):
 			main()
+
+
+
+			
+			
+			
+'''
+上面是抓所有然后去重，下面这个是在抓之前就已经去重
+'''
+
+#coding:utf-8
+import requests,time,re,os
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
+
+def main():
+	#把xml中的数据拿下来，根据lastmod判断是否是昨天发布的文章
+	url_item_list = []#url和/url之间的字符
+	yesterday_url_list = []#仅昨天发布的文章url列表
+	for i in range(4,5):#xml文件索引数值
+		url = ''
+		r = requests.get(url)		
+		url_item_list = re.findall(r'<url>([\s\S]*?)</url>',r.content)#*后面的?是关键
+		
+		for item in url_item_list:
+			if '2016-11-27' in item:
+				yesterday_url = re.findall(r'<loc>(.*?)</loc>',item)
+				yesterday_url_list.append(yesterday_url[0])
+		print yesterday_url_list			
+			
+		
+	f = open('all_url.txt',r'a+')#所有的url
+	f_ytd = open('yesterday_0.txt',r'w+')#昨天发布的文章url
+	f_ytd_m = open('yesterday_m_0.txt',r'w+')#昨天发布的文章url(m)
+	
+	
+	txt_index = 0
+	for link in yesterday_url_list:
+		f.write(link+'\n')#追加到所有的url txt里
+		f_ytd.write(link+'\n')#把昨天的url放到单独的文件内
+		f_ytd_m.write(link.replace('www','m')+'\n')#把昨天的url放到单独的文件内(m)
+			
+		if num%2000 == 1999:#如果昨天发布的文章数量大于2000 则分文件存储
+			f_ytd.close()
+			f_ytd_m.close()			
+			txt_index += 1
+			f_ytd = open('yesterday_%s.txt'%txt_index,r'w+')
+			f_ytd_m = open('yesterday_m_%s.txt'%txt_index,r'w+')
+			
+				
+	f.close()
+	f_ytd.close()
+	f_ytd_m.close()
+	
+	print 'yesterday has %s'%len(yesterday_url_list)
+	print 'crawl done'
+	
+	time.sleep(5)
+
+	#开始推送
+	print 'push begin'
+	for i in range(0,txt_index+1):
+		try:
+			headers = {'Content-Type':'text/plain'}
+			url = 'http://data.zz.baidu.com/urls'
+			
+			params = {'site':'','token':''}#,'type':'original'
+			r = requests.post(url,params=params,headers=headers,data=open('yesterday_%s.txt'%i,r'rb').read())
+			
+			#m
+			params_m = {'site':'','token':''}#,'type':'original'
+			r_m = requests.post(url,params=params_m,headers=headers,data=open('yesterday_m_%s.txt'%i,r'rb').read())
+			
+			#熊掌号
+			params_xzh = {'appid':'','token':'','type':''}
+			r_xzh = requests.post(url,params=params_xzh,headers=headers,data=open('yesterday_m_%s.txt'%i,r'rb').read())
+			
+			
+			print 'PC:'+r.content+','+'M:'+r_m.content+','+'XZH:'+r_xzh.content
+			
+			
+			
+		except Exception,e:
+			print e
+			continue
+	print 'Finish!!!'
+	
+
+if __name__ == '__main__':
+#	while True:
+#		current_time = time.localtime(time.time())
+#		if((current_time.tm_hour == 18) and (current_time.tm_min == 0) and (current_time.tm_sec == 0)):
+	main()
+
 
 
 
