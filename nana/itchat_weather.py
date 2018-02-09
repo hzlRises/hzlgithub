@@ -41,3 +41,42 @@ if __name__ == "__main__":
 	while(1):
 		main()
 		time.sleep(60)
+		
+		
+		
+'''
+#coding:utf-8
+import itchat,json,time
+import requests,sys
+reload(sys) 
+sys.setdefaultencoding('utf8')
+
+#http://yhq.techseo.cn/yhq/?r=l&kw=%E7%94%B7%E7%9A%AE%E9%9E%8B
+
+
+@itchat.msg_register(itchat.content.TEXT)
+def print_content(msg):
+ #   print(msg['Text'])
+	url = 'http://yhq.techseo.cn/yhq/?r=l&kw=' + 'iphone' #msg['Text']
+	short_url_api = 'http://tools.aeink.com/tools/dwz/urldwz.php?longurl=%s'%url
+	r = requests.get(short_url_api)
+	j_data = json.loads(r.content)
+	
+	print j_data['ae_url']
+	
+
+def  main():
+	itchat.auto_login(hotReload=True)
+	itchat.run()
+	
+	
+
+if __name__ == "__main__":
+	short_url_api = 'http://tools.aeink.com/tools/dwz/urldwz.php?longurl=%s'%('http://yhq.techseo.cn/yhq/?r=l&kw=iphone')
+	r = requests.get(short_url_api)
+	j_data = json.loads(r.content)	
+	print j_data['ae_url']
+
+	
+
+'''
