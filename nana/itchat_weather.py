@@ -57,12 +57,12 @@ sys.setdefaultencoding('utf8')
 @itchat.msg_register(itchat.content.TEXT)
 def print_content(msg):
  #   print(msg['Text'])
-	url = 'http://yhq.techseo.cn/yhq/?r=l&kw=' + 'iphone' #msg['Text']
-	short_url_api = 'http://tools.aeink.com/tools/dwz/urldwz.php?longurl=%s'%url
-	r = requests.get(short_url_api)
-	j_data = json.loads(r.content)
+	print msg.fromUserName
+	url = 'http://yhq.techseo.cn/yhq/?r=l&kw=' + '%s' %(msg['Text'])	
+	print url
+#	itchat.send(url, msg.fromUserName)
+	return url
 	
-	print j_data['ae_url']
 	
 
 def  main():
@@ -72,11 +72,7 @@ def  main():
 	
 
 if __name__ == "__main__":
-	short_url_api = 'http://tools.aeink.com/tools/dwz/urldwz.php?longurl=%s'%('http://yhq.techseo.cn/yhq/?r=l&kw=iphone')
-	r = requests.get(short_url_api)
-	j_data = json.loads(r.content)	
-	print j_data['ae_url']
-
+	main()
 	
 
 '''
