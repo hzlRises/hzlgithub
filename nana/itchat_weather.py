@@ -48,31 +48,39 @@ if __name__ == "__main__":
 #coding:utf-8
 import itchat,json,time
 import requests,sys
+import urllib
 reload(sys) 
 sys.setdefaultencoding('utf8')
 
-#http://yhq.techseo.cn/yhq/?r=l&kw=%E7%94%B7%E7%9A%AE%E9%9E%8B
-
 
 @itchat.msg_register(itchat.content.TEXT)
-def print_content(msg):
- #   print(msg['Text'])
-	print msg.fromUserName
-	url = 'http://yhq.techseo.cn/yhq/?r=l&kw=' + '%s' %(msg['Text'])	
+
+# 注册消息响应事件，消息类型为itchat.content.TEXT，即文本消息
+def text_reply(msg):
+	url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text']))	
 	print url
-#	itchat.send(url, msg.fromUserName)
-	return url
-	
+	itchat.send(url,msg.fromUserName)
+
+# 处理好友添加请求
+@itchat.msg_register(FRIENDS)
+def add_friend(msg):
+    # 该操作会自动将新好友的消息录入，不需要重载通讯录
+    itchat.add_friend(**msg['Text']) 
+    # 加完好友后，给好友打个招呼
+    itchat.send_msg(u'你好，我是机器人', msg['RecommendInfo']['UserName'])
+
+
 	
 
 def  main():
 	itchat.auto_login(hotReload=True)
 	itchat.run()
-	
+#itchat.send('Hello, filehelper', toUserName='filehelper')
 	
 
 if __name__ == "__main__":
 	main()
+	
 	
 
 '''
