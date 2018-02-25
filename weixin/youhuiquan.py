@@ -5,6 +5,16 @@ import jd
 reload(sys) 
 sys.setdefaultencoding('utf-8')
 
+
+#长链接转换为短链接
+def getShortUrl(url):
+	encode_url = urllib.quote(url)
+	sina_url = 'http://api.t.sina.com.cn/short_url/shorten.json?source=3271760578&url_long=%s'%encode_url
+	r_short = requests.get(sina_url)
+	j_data = json.loads(r_short.content)
+	return j_data[0]['url_short']
+		
+
 @itchat.msg_register(itchat.content.TEXT)
 # 注册消息响应事件，消息类型为itchat.content.TEXT，即文本消息
 def text_reply(msg):
@@ -16,12 +26,12 @@ def text_reply(msg):
 		sku_id = jd.getGoodsIdByUrl(msg['Text'])
 		goods_name,price,fanli = jd.getProductInfo(sku_id)
 		click_url = jd.getFanliLink(sku_id)		
-		message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'\n'+u'【商品返利】'+fanli+'\n'+u'【返利链接】'+click_url
+		message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'\n'+u'【商品返利】'+fanli+'\n'+u'【返利链接】'+getShortUrl(click_url)
 	elif '帮助' in msg['Text']:
 		message = '【在淘宝购物前领券】假如你想买鼠标垫，直接把鼠标垫三个字发给机器人，机器人会把找到的鼠标垫相关商品链接发给你，点进去复制淘口令，再打开淘宝/天猫APP就可以领到优惠券啦\n【在京东购物】打开京东APP，找到自己想买的商品，点击右上角分享按钮，把商品链接复制，发给我就可以看到返利消息啦\n快试试吧...'
 	else:
 		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
-		message = u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s\n-----------\n发送【帮助】查看使用机器人流程'%(msg['Text'],url)
+		message = u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s\n-----------\n发送【帮助】查看使用机器人流程'%(msg['Text'],getShortUrl(url))
 
 	print message
 	itchat.send(message,msg.fromUserName)
@@ -36,6 +46,7 @@ def group_reply_text(msg):
 	
 	if chatroom_id == '@@a3f3bfafe461ecb368a6c602e42d1cb6f4a26fca1fff90215a69653298af31b5' and msg['Type'] == itchat.content.TEXT:
 		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
+		
 		itchat.send(u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s'%(msg['Text'],url),'@@a3f3bfafe461ecb368a6c602e42d1cb6f4a26fca1fff90215a69653298af31b5')
 
 		
@@ -48,7 +59,7 @@ def add_friend(msg):
     itchat.send_msg('你好，我是微信自动回复消息机器人,想在淘宝/天猫买东西？直接把关键词发给我，机器人帮你找相关商品优惠券。\n想在京东买东西？把链接发给我，机器人给你发返利红包，发送【帮助】查看使用机器人流程。', msg['RecommendInfo']['UserName'])
 	
 		
-		
+
 def  main():
 	itchat.auto_login(hotReload=True)
 	itchat.run()
