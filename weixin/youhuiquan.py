@@ -29,6 +29,9 @@ def text_reply(msg):
 		message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+getShortUrl(click_url)
 	elif '帮助' in msg['Text']:
 		message = '[愉快]【在淘宝购物前领券】假如你想买鼠标垫，直接把鼠标垫三个字发给机器人，机器人会把找到的鼠标垫相关商品链接发给你，点进去复制淘口令，再打开淘宝/天猫APP就可以领到优惠券啦。\n[愉快]【在京东购物】打开京东APP，找到自己想买的商品，点击右上角分享按钮，把商品链接复制，发给我就可以看到返利链接啦，确认收货后发送【提现】，等待客服审核就可以啦。\n快试试吧...'
+	#回复表情
+	elif '[' in msg['Text'] and ']' in msg['Text']:
+		message = u'[愉快]'
 	elif '提现' in msg['Text']:	
 	
 		#需要给主人发消息，先获得主人的id，以@符号开头
@@ -38,7 +41,6 @@ def text_reply(msg):
 		
 		#获取提现申请人的昵称
 		friend_content = itchat.search_friends(userName = msg.fromUserName)
-		print friend_content
 		friend_name = friend_content['NickName']
 
 		#给主人发消息提醒
@@ -59,6 +61,11 @@ def text_reply(msg):
 
 	print message
 	itchat.send(message,msg.fromUserName)
+	
+	#记录
+	now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+	with open('log.txt',r'a+') as my:
+		my.write(itchat.search_friends(userName = msg.fromUserName)['NickName']+','+msg['Text']+','+now+'\n')
 #	return url
 
 
