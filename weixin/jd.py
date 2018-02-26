@@ -3,7 +3,10 @@ import time,md5,requests,json,sys
 #hzl
 reload(sys)
 sys.setdefaultencoding("utf-8")
-
+'''
+获取access_token
+https://auth.360buy.com/oauth/token?grant_type=authorization_code&client_id=5516FCE2AEB0F8D4143494099E0471B5&redirect_uri=http://techseo.cn/&code=o4Ry0I&state=quanyi&client_secret=a5addbe9dd9b43adab27d2071da09e9c
+'''
 app_key = '5516FCE2AEB0F8D4143494099E0471B5'
 app_secret = 'a5addbe9dd9b43adab27d2071da09e9c'
 union_id = 1000112345
@@ -13,8 +16,8 @@ pid = '1000112345_0_1187835078'
 client_id = app_key
 redirect_uri = 'http://techseo.cn/'
 state = 'null'
-code = 'BVDySE'
-access_token = 'cfa0b856-27f8-45a9-a602-6bb4e42008f2'
+code = 'o4Ry0I'
+access_token = '5c54d3e6-b24f-4e39-a874-012d5b9b5dde'
 now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))	
 
 
