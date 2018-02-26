@@ -52,7 +52,7 @@ def text_reply(msg):
 		elif friend_content['Sex'] == 0:
 			message = friend_name +u'美女，请耐心等待哦，由于人数较多，客服火速确认中呢...'
 		else:
-			message = friend_name +u'美女，请耐心等待哦，由于人数较多，客服火速确认中呢...'
+			message = friend_name +u'请耐心等待哦，由于人数较多，客服火速确认中呢...'
 			
 			
 	else:
