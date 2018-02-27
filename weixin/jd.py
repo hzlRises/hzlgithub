@@ -1,158 +1,92 @@
 #coding:utf-8
-import time,md5,requests,json,sys
+import itchat,json,time,requests,sys,urllib
+import jd
 #hzl
-reload(sys)
-sys.setdefaultencoding("utf-8")
-'''
-获取access_token
-https://auth.360buy.com/oauth/token?grant_type=authorization_code&client_id=5516FCE2AEB0F8D4143494099E0471B5&redirect_uri=http://techseo.cn/&code=o4Ry0I&state=quanyi&client_secret=a5addbe9dd9b43adab27d2071da09e9c
-'''
-app_key = '5516FCE2AEB0F8D4143494099E0471B5'
-app_secret = 'a5addbe9dd9b43adab27d2071da09e9c'
-union_id = 1000112345
-site_id = 563873616
-tuiguang_id = 1187835078#推广位名称:weixinbot
-pid = '1000112345_0_1187835078'
-client_id = app_key
-redirect_uri = 'http://techseo.cn/'
-state = 'null'
-code = 'o4Ry0I'
-access_token = '5c54d3e6-b24f-4e39-a874-012d5b9b5dde'
-now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))	
+reload(sys) 
+sys.setdefaultencoding('utf-8')
 
-
-
-def getGoodsIdByUrl(url):
-	#url = 'https://item.m.jd.com/product/12673813270.html?&utm_source=iosapp&utm_medium=appshare&utm_campaign=t_335139774&utm_term=CopyURL'
-	sku_id = url.split('/')[-1].split('.')[0]
-	return sku_id
-
-#拼接sign 获取md5
-def getSignAndMd5(keys,app_secret,params):
-	#拼接sign
-	md5_str = app_secret
-	for key in keys:
-		md5_str += key
-		md5_str += params[key]
-	md5_str += app_secret
-	
-	#md5计算
-	m1 = md5.new()
-	m1.update(md5_str)
-	sign = m1.hexdigest()
-	return sign
-	
-	
-def getFanliLink(skuId):
-	url = 'https://item.m.jd.com/product/%s.html'%skuId
-	params = {
-	'access_token':'%s'%access_token,
-	'app_key':'%s'%app_key,
-	'method':'jingdong.service.promotion.batch.getcode',
-	'timestamp':now,
-	'v':'2.0',
-	'id':'%s'%skuId,
-	'url':'%s'%url,	
-	'unionId':'%s'%union_id,
-	'channel':'WL',
-	'webId':'%s'%site_id,
-	}	
-	
-	#参数排序
-	keys = params.keys()
-	keys.sort()
-	#访问服务
-	url = 'https://api.jd.com/routerjson?sign=%s'%getSignAndMd5(keys,app_secret,params)
-	r = requests.get(url,params=params)
-	skuinfo_result = json.loads(r.content)
-	unicode_str = skuinfo_result['jingdong_service_promotion_batch_getcode_responce']['querybatch_result']
-	unicode_result = json.loads(unicode_str)
-	click_url = unicode_result['urlList'][0]['url']
-	
-	return click_url
-	
-	
-def getProductInfo(sku_id):
-
-	params = {
-	'access_token':'%s'%access_token,
-	'app_key':'%s'%app_key,
-	'method':'jingdong.service.promotion.goodsInfo',
-	'timestamp':now,
-	'skuIds':'%s'%sku_id,
-	'v':'2.0',
-	}	
-	
-	#参数排序
-	keys = params.keys()
-	keys.sort()
-	
-	#访问服务
-	url = 'https://api.jd.com/routerjson?sign=%s'%getSignAndMd5(keys,app_secret,params)
-	r = requests.get(url,params=params)	
-	skuinfo_result = json.loads(r.content)
-	unicode_str = skuinfo_result['jingdong_service_promotion_goodsInfo_responce']['getpromotioninfo_result']
-	unicode_result = json.loads(unicode_str)	
-	goodsName = unicode_result['result'][0]['goodsName']#商品名称
-	unitPrice = unicode_result['result'][0]['unitPrice']#商品价格
-	commisionRatioPc = unicode_result['result'][0]['commisionRatioPc']#佣金比例	
-	#返给用户的钱
-	fanli = round(unitPrice*commisionRatioPc/100*0.3,2)	
-	'''
-	for k,v in unicode_result['result'][0].iteritems():
-		if k == 'goodsName':
-			print v
-		if k == 'commisionRatioPc':
-			print v
-		if k == 'unitPrice':
-			print v
+@itchat.msg_register(itchat.content.TEXT)
+# 注册消息响应事件，消息类型为itchat.content.TEXT，即文本消息
+def text_reply(msg):
+	print msg['Text']#unicode
+#	print type(msg['Text'])#unicode
+#	msg['Text'].encode("utf-8")  unicode转为 str
+#	print urllib.quote(msg['Text'].encode("utf-8"))	
+	if 'jd.com' in msg['Text']:
+		sku_id = jd.getGoodsIdByUrl(msg['Text'])
+		goods_name,price,fanli = jd.getProductInfo(sku_id)
 		
+		click_url = jd.getFanliLink(sku_id)		
+		print click_url
+		message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
+	elif '帮助' in msg['Text']:
+		message = '[愉快]【在淘宝购物前领券】假如你想买鼠标垫，直接把鼠标垫三个字发给机器人，机器人会把找到的鼠标垫相关商品链接发给你，点进去复制淘口令，再打开淘宝/天猫APP就可以领到优惠券啦。\n[愉快]【在京东购物】打开京东APP，找到自己想买的商品，点击右上角分享按钮，把商品链接复制，发给我就可以看到返利链接啦，确认收货后发送【提现】，等待客服审核就可以啦。\n快试试吧...'
+	#回复表情
+	elif '[' in msg['Text'] and ']' in msg['Text']:
+		message = u'[愉快]'
+	elif '提现' in msg['Text']:	
 	
-	'''
-	return goodsName.encode('utf-8'),str(unitPrice),str(fanli)
-def main():
-	pass
-if __name__ == '__main__':
+		#需要给主人发消息，先获得主人的id，以@符号开头
+		user_content = itchat.search_friends(name = u'雨一直下')
+		
+		userName = user_content[0]['UserName']
+		
+		#获取提现申请人的昵称
+		friend_content = itchat.search_friends(userName = msg.fromUserName)
+		friend_name = friend_content['NickName']
+
+		#给主人发消息提醒
+		itchat.send( friend_name+u'申请提现',toUserName = userName)		
+			
+		#判断提现人性别
+		if friend_content['Sex'] == 1:
+			message = friend_name +u'帅哥，请耐心等待哦，由于人数较多，客服火速确认中呢...'		
+		elif friend_content['Sex'] == 0:
+			message = friend_name +u'美女，请耐心等待哦，由于人数较多，客服火速确认中呢...'
+		else:
+			message = friend_name +u'请耐心等待哦，由于人数较多，客服火速确认中呢...'
+			
+			
+	else:
+		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
+		message = u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s\n-----------\n发送【帮助】查看使用机器人流程\n更多大额神券商品点击下方链接：\nhttp://t.cn/RTzLM6g'%(msg['Text'],jd.getShortUrl(url))
+
+	print message
+	itchat.send(message,msg.fromUserName)
+	
+	#记录
+	now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+	with open('log.txt',r'a+') as my:
+		my.write(itchat.search_friends(userName = msg.fromUserName)['NickName']+','+msg['Text']+','+now+'\n')
+#	return url
+
+
+#处理群消息
+@itchat.msg_register([itchat.content.TEXT, itchat.content.SHARING], isGroupChat=True)
+def group_reply_text(msg):
+	chatroom_id = msg['FromUserName']
+	username = msg['ActualNickName']
+	
+	if chatroom_id == '@@a3f3bfafe461ecb368a6c602e42d1cb6f4a26fca1fff90215a69653298af31b5' and msg['Type'] == itchat.content.TEXT:
+		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
+		
+		itchat.send(u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s'%(msg['Text'],url),'@@a3f3bfafe461ecb368a6c602e42d1cb6f4a26fca1fff90215a69653298af31b5')
+
+		
+# 处理好友添加请求
+@itchat.msg_register(itchat.content.FRIENDS)
+def add_friend(msg):
+    # 该操作会自动将新好友的消息录入，不需要重载通讯录
+    itchat.add_friend(**msg['Text'])
+    # 加完好友后，给好友打个招呼
+    itchat.send_msg('[愉快]你好，我是微信自动回复消息机器人\n[抠鼻]想在淘宝/天猫买东西？直接把关键词发给我，机器人帮你找相关商品优惠券。\n[抠鼻]想在京东买东西？把链接发给我，机器人给你发返利红包\n--------------\n发送【帮助】查看使用机器人流程。', msg['RecommendInfo']['UserName'])
+	
+		
+
+def  main():
+	itchat.auto_login(hotReload=True)
+	itchat.run()
+#itchat.send('Hello, filehelper', toUserName='filehelper')
+	
+if __name__ == "__main__":
 	main()
-	
-	
-	
-	
-	
-'''
-
-一一一一返 利 消 息一一一一
-
-奥康男鞋  黑色圆头商务休闲真皮加绒男鞋低帮鞋套脚舒适保暖皮鞋
-------------------
-【商品原价】199元
-【返利红包】6.17元
---------------------
-【购买方法】一定要复制这条信息，才会有返利！打开【手机淘宝】可领卷并下单￥1z1M0MQzAxN￥
-------------------
-输入“买关键词”  (例如：买连衣裙)
-自动查找你想要的商品
-
-
-
-https://auth.360buy.com/oauth/token?
-grant_type=authorization_code
-&client_id=5516FCE2AEB0F8D4143494099E0471B5
-&redirect_uri=http://techseo.cn/
-&code=BVDySE
-&state=
-&client_secret=a5addbe9dd9b43adab27d2071da09e9c
-{
-  "access_token": "cfa0b856-27f8-45a9-a602-6bb4e42008f2",
-  "code": 0,
-  "expires_in": 86399,
-  "refresh_token": "b6aa6546-88fb-4bd4-9715-1de2398322e9",
-  "time": "1519537997259",
-  "token_type": "bearer",
-  "uid": "3511848567",
-  "user_nick": "jd_188001lin"
-}
-
-'''
-	
-	
