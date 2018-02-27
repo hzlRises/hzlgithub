@@ -20,9 +20,17 @@ def getShortUrl(url):
 
 def getGoodsIdByUrl(url):
 	#url = 'https://item.m.jd.com/product/12673813270.html?&utm_source=iosapp&utm_medium=appshare&utm_campaign=t_335139774&utm_term=CopyURL'
-	sku_id = url.split('/')[-1].split('.')[0]
-	return sku_id
-
+	if 'item' in url:
+		sku_id = url.split('/')[-1].split('.')[0]	
+		return sku_id
+	'''
+	else:		
+		id_str_list = url.split('&')
+		for i in id_str_list:			
+			if 'id=' in i:				
+				return i.split('=')[1]
+			
+	'''
 #拼接sign 获取md5
 def getSignAndMd5(keys,app_secret,params):
 	#拼接sign
