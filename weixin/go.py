@@ -5,6 +5,12 @@ import jd
 reload(sys) 
 sys.setdefaultencoding('utf-8')
 
+#发送消息并且记录到log
+def send_msg_(message):
+	now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+	pass
+	
+
 @itchat.msg_register(itchat.content.TEXT)
 # 注册消息响应事件，消息类型为itchat.content.TEXT，即文本消息
 def text_reply(msg):
@@ -17,7 +23,6 @@ def text_reply(msg):
 		goods_name,price,fanli = jd.getProductInfo(sku_id)
 		
 		click_url = jd.getFanliLink(sku_id)		
-		print click_url
 		message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
 	elif '帮助' in msg['Text']:
 		message = '[愉快]【在淘宝购物前领券】假如你想买鼠标垫，直接把鼠标垫三个字发给机器人，机器人会把找到的鼠标垫相关商品链接发给你，点进去复制淘口令，再打开淘宝/天猫APP就可以领到优惠券啦。\n[愉快]【在京东购物】打开京东APP，找到自己想买的商品，点击右上角分享按钮，把商品链接复制，发给我就可以看到返利链接啦，确认收货后发送【提现】，等待客服审核就可以啦。\n快试试吧...'
@@ -66,12 +71,15 @@ def text_reply(msg):
 def sharing_reply(msg):
 	#print msg['Url']#['url']
 	if 'jd.com' in msg['Url']:
-		sku_id = jd.getGoodsIdByUrl(msg['Url'])
-		goods_name,price,fanli = jd.getProductInfo(sku_id)		
-		click_url = jd.getFanliLink(sku_id)		
-		message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
+		try:
+			sku_id = jd.getGoodsIdByUrl(msg['Url'])
+			goods_name,price,fanli = jd.getProductInfo(sku_id)		
+			click_url = jd.getFanliLink(sku_id)		
+			message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
+		except Exception,e:
+			message = u'请您确定是从京东APP的商品【详情页】分享的链接哦。'
 	else:
-		message = u'请确定您是从京东APP分享的链接哦。'
+		message = u'请您确定是从京东APP的商品【详情页】分享的链接哦。'
 	itchat.send(message,msg.fromUserName)
 	now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
 	with open('log.txt',r'a+') as my:
