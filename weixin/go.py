@@ -61,18 +61,36 @@ def text_reply(msg):
 #	return url
 
 
+#处理分享消息,获取分享信息里的链接
+@itchat.msg_register(itchat.content.SHARING)
+def sharing_reply(msg):
+	#print msg['Url']#['url']
+	if 'jd.com' in msg['Url']:
+		sku_id = jd.getGoodsIdByUrl(msg['Url'])
+		goods_name,price,fanli = jd.getProductInfo(sku_id)		
+		click_url = jd.getFanliLink(sku_id)		
+		message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
+	else:
+		message = u'请确定您是从京东APP分享的链接哦。'
+	itchat.send(message,msg.fromUserName)
+	now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
+	with open('log.txt',r'a+') as my:
+		my.write(itchat.search_friends(userName = msg.fromUserName)['NickName']+','+msg['Url']+','+now+'\n')
+
+'''
 #处理群消息
 @itchat.msg_register([itchat.content.TEXT, itchat.content.SHARING], isGroupChat=True)
 def group_reply_text(msg):
 	chatroom_id = msg['FromUserName']
 	username = msg['ActualNickName']
+	#print username,chatroom_id
 	
-	if chatroom_id == '@@a3f3bfafe461ecb368a6c602e42d1cb6f4a26fca1fff90215a69653298af31b5' and msg['Type'] == itchat.content.TEXT:
+	if chatroom_id == '@@be5e2eb0246421f5deb6298faa715e046dc4b30a879566d3b233bf7cecb8c343' and msg['Type'] == itchat.content.TEXT:
 		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
 		
 		itchat.send(u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s'%(msg['Text'],url),'@@a3f3bfafe461ecb368a6c602e42d1cb6f4a26fca1fff90215a69653298af31b5')
 
-		
+'''	
 # 处理好友添加请求
 @itchat.msg_register(itchat.content.FRIENDS)
 def add_friend(msg):
