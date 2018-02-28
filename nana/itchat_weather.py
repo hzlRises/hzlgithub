@@ -33,8 +33,8 @@ def  main():
 	itchat.auto_login(hotReload=True)
 	user_content = itchat.search_friends(name=u'雨一直下')
 	userName = user_content[0]['UserName']
-	itchat.send(getWeather(101230201),toUserName = userName)#厦门
-	itchat.send(getWeather(101010100),toUserName = userName)#北京
+	itchat.send(getWeather(000),toUserName = userName)#厦门
+	itchat.send(getWeather(000),toUserName = userName)#北京
 	
 
 if __name__ == "__main__":
