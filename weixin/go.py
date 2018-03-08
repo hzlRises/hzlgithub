@@ -1,9 +1,10 @@
 #coding:utf-8
-import itchat,json,time,requests,sys,urllib
+import itchat,json,time,requests,sys,urllib,os,re
 import jd
 #hzl
 reload(sys) 
 sys.setdefaultencoding('utf-8')
+
 
 #发送消息并且记录到log
 def send_msg_(message):
@@ -18,10 +19,9 @@ def text_reply(msg):
 #	print type(msg['Text'])#unicode
 #	msg['Text'].encode("utf-8")  unicode转为 str
 #	print urllib.quote(msg['Text'].encode("utf-8"))	
-	if 'jd.com' in msg['Text']:
+	if 'jd.com' in msg['Text'] and 'item' in msg['Text']:
 		sku_id = jd.getGoodsIdByUrl(msg['Text'])
-		goods_name,price,fanli = jd.getProductInfo(sku_id)
-		
+		goods_name,price,fanli = jd.getProductInfo(sku_id)		
 		click_url = jd.getFanliLink(sku_id)		
 		message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
 	elif '帮助' in msg['Text']:
@@ -29,29 +29,32 @@ def text_reply(msg):
 	#回复表情
 	elif '[' in msg['Text'] and ']' in msg['Text']:
 		message = u'[愉快]'
-	elif '提现' in msg['Text']:	
-	
+	elif '提现' in msg['Text']:
 		#需要给主人发消息，先获得主人的id，以@符号开头
-		user_content = itchat.search_friends(name = u'雨一直下')
-		
-		userName = user_content[0]['UserName']
-		
+		user_content = itchat.search_friends(name = u'雨一直下')		
+		userName = user_content[0]['UserName']		
 		#获取提现申请人的昵称
 		friend_content = itchat.search_friends(userName = msg.fromUserName)
 		friend_name = friend_content['NickName']
-
 		#给主人发消息提醒
-		itchat.send( friend_name+u'申请提现',toUserName = userName)		
-			
+		itchat.send( friend_name+u'申请提现',toUserName = userName)				
 		#判断提现人性别
 		if friend_content['Sex'] == 1:
 			message = friend_name +u'帅哥，请耐心等待哦，由于人数较多，客服火速确认中呢...'		
 		elif friend_content['Sex'] == 0:
 			message = friend_name +u'美女，请耐心等待哦，由于人数较多，客服火速确认中呢...'
 		else:
-			message = friend_name +u'请耐心等待哦，由于人数较多，客服火速确认中呢...'
-			
-			
+			message = friend_name +u'请耐心等待哦，由于人数较多，客服火速确认中呢...'			
+	
+	#活动页转链接
+	elif 'hzlxy' in msg['Text']:
+		link = msg['Text'].encode("utf-8").replace('hzlxy','')
+		link = re.sub(r'\?.*','',link)
+		r = requests.get(link)
+		url = r.url
+		duan_url = jd.getSelfCode(url)
+		short_url = jd.getShortUrl(duan_url)		
+		message = short_url			
 	else:
 		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
 		message = u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s\n-----------\n发送【帮助】查看使用机器人流程\n更多大额神券商品点击下方链接：\nhttp://t.cn/RTzLM6g'%(msg['Text'],jd.getShortUrl(url))
@@ -62,7 +65,7 @@ def text_reply(msg):
 	#记录
 	now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
 	with open('log.txt',r'a+') as my:
-		my.write(itchat.search_friends(userName = msg.fromUserName)['NickName']+','+msg['Text']+','+now+'\n')
+		my.write('TEXT,'+itchat.search_friends(userName = msg.fromUserName)['NickName']+','+msg['Text']+','+now+'\n')
 #	return url
 
 
@@ -70,20 +73,20 @@ def text_reply(msg):
 @itchat.msg_register(itchat.content.SHARING)
 def sharing_reply(msg):
 	#print msg['Url']#['url']
-	if 'jd.com' in msg['Url']:
+	if 'jd.com' in msg['Url'] and 'item' in msg['Url']:
 		try:
 			sku_id = jd.getGoodsIdByUrl(msg['Url'])
 			goods_name,price,fanli = jd.getProductInfo(sku_id)		
 			click_url = jd.getFanliLink(sku_id)		
 			message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
 		except Exception,e:
-			message = u'请您确定是从京东APP的商品【详情页】分享的链接哦。'
+			message = u'请您确定是从京东APP的商品【详情页】分享的链接哦。'	
 	else:
 		message = u'请您确定是从京东APP的商品【详情页】分享的链接哦。'
 	itchat.send(message,msg.fromUserName)
 	now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
 	with open('log.txt',r'a+') as my:
-		my.write(itchat.search_friends(userName = msg.fromUserName)['NickName']+','+msg['Url']+','+now+'\n')
+		my.write('SHARING,'+itchat.search_friends(userName = msg.fromUserName)['NickName']+','+msg['Url']+','+now+'\n')
 
 '''
 #处理群消息
@@ -109,9 +112,15 @@ def add_friend(msg):
 	
 		
 
-def  main():
+def  main():	
+	#登陆微信
 	itchat.auto_login(hotReload=True)
 	itchat.run()
+	
+
+		
+		
+		
 #itchat.send('Hello, filehelper', toUserName='filehelper')
 	
 if __name__ == "__main__":
