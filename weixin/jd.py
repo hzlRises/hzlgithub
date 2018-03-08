@@ -8,6 +8,12 @@ sys.setdefaultencoding("utf-8")
 获取access_token
 https://auth.360buy.com/oauth/token?grant_type=authorization_code&client_id=5516FCE2AEB0F8D4143494099E0471B5&redirect_uri=http://techseo.cn/&code=o4Ry0I&state=quanyi&client_secret=a5addbe9dd9b43adab27d2071da09e9c
 '''
+
+
+
+
+
+
 #长链接转换为短链接
 def getShortUrl(url):
 	encode_url = urllib.quote(url)
@@ -114,6 +120,37 @@ def getProductInfo(sku_id):
 	
 	'''
 	return goodsName.encode('utf-8'),str(unitPrice),str(fanli)
+	
+	
+	
+def getSelfCode(url):
+	params = {
+	'access_token':'%s'%secret.getSecret()['access_token'],
+	'app_key':'%s'%secret.getSecret()['app_key'],
+	'method':'jingdong.service.promotion.getcode',
+	'timestamp':secret.getSecret()['now'],	
+	'v':'2.0',
+	'promotionType':'7',
+	'materialId':'%s'%url,
+	'unionId':'%s'%secret.getSecret()['union_id'],
+	'channel':'WL',
+	'webId':'%s'%secret.getSecret()['site_id'],
+	'adttype':'6',
+	}	
+	
+	#参数排序
+	keys = params.keys()
+	keys.sort()
+	
+	#访问服务
+	url = 'https://api.jd.com/routerjson?sign=%s'%getSignAndMd5(keys,secret.getSecret()['app_secret'],params)
+	r = requests.get(url,params=params)	
+	result_ = json.loads(r.content)
+	unicode_str = result_['jingdong_service_promotion_getcode_responce']['queryjs_result']
+	unicode_result = json.loads(unicode_str)
+	click_url = unicode_result['url']
+	return click_url
+	
 def main():
 	pass
 if __name__ == '__main__':
