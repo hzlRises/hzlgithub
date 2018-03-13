@@ -18,7 +18,7 @@ pyinstaller  C:\Users\heziliang\tianwei\go.py
 
 2、cookie放到cookie.txt,从下面的地址获取cookie
 
-https://www.baidu.com/s?wd=666tn=json&rn=50
+https://www.baidu.com/s?wd=666&tn=json&rn=50
 
 3、双击go.exe执行
 
