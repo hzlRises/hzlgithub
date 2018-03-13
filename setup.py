@@ -5,4 +5,6 @@ setup(console = ['Calculate.py'])
 '''
 python setup.py py2exe
 
+
+pyinstaller  C:\Users\heziliang\tianwei\go.py 
 '''
