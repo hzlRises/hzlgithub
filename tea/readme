@@ -7,6 +7,6 @@ laugh
 生成links_sogou.txt
 
 
-运行pa_con_sogou.py，爬具体的问答内容，用到links_sogou.txt，结果直接入本地数据库
+运行go_sogou_content.py，爬具体的问答内容，用到links_sogou.txt，结果直接入本地数据库
 
 t_article_daochu.xls是上个步骤生成本地数据库里导出来的数据
