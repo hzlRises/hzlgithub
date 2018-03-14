@@ -1,12 +1,31 @@
 laugh
 
-运行 go_sogou.py，爬关键词对应的问答列表里的url ，用到kw_sogou.txt
+1、运行 go_sogou.py，爬关键词对应的问答列表里的url ，用到kw_sogou.txt
 
 第一批关键词无法分辨已经用了哪个，已经在“原始关键词.xlxs”里面标红
 
 生成links_sogou.txt
 
-
-运行go_sogou_content.py，爬具体的问答内容，用到links_sogou.txt，结果直接入本地数据库
+2、运行go_sogou_content.py，爬具体的问答内容，用到links_sogou.txt，结果直接入本地数据库
 
 t_article_daochu.xls是上个步骤生成本地数据库里导出来的数据
+
+
+
+3、生成文章详情页id，用到文章标题和对应的id，id相当于盐，规避文章标题相同的问题
+经常喝红茶有什么坏处和好处 14
+把文章详情页id复制到t_article_daochu.xls
+
+
+
+4、按照数据库的字段，写到  daoru_mip_duiying_ziduan.xlsx
+
+mip_articles_content_import.py	
+mip_articles_import.py
+
+两个脚本用来往线上正式库传数据
+
+
+
+
+
