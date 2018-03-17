@@ -3,6 +3,17 @@ import MySQLdb,requests,paramiko,time
 import sys,datetime
 reload(sys)
 sys.setdefaultencoding('utf-8')
+'''
+fuck
+fuck
+fuck
+fuck
+fuck
+fuck
+fuck
+fuck
+fuck
+'''
 
 f = open('fk_sitemap.xml',r'w+')
 f.write('<?xml version="1.0" encoding="utf-8"?>'+'\n')
