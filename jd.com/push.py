@@ -87,11 +87,11 @@ def main():
 		try:
 			headers = {'Content-Type':'text/plain'}
 			url = 'http://data.zz.baidu.com/urls'
-			params = {'site':'www.jd.com','token':'00Mteo2F4brQRR6S'}#,'type':'original'
+			params = {'site':'99','token':'99'}#,'type':'original'
 			r = requests.post(url,params=params,headers=headers,data=open('yesterday_%s.txt'%i,r'rb').read())
 			
 			#m
-			params_m = {'site':'m.jd.com','token':'00Mteo2F4brQRR6S'}#,'type':'original'
+			params_m = {'site':'99','token':'99'}#,'type':'original'
 			r_m = requests.post(url,params=params_m,headers=headers,data=open('yesterday_m_%s.txt'%i,r'rb').read())
 			print 'PC:'+r.content+','+'M:'+r_m.content
 			
