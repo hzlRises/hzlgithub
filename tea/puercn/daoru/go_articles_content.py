@@ -10,7 +10,7 @@ rows = t1.nrows#获取行数
 
 
 
-conn = MySQLdb.connect('bdm257248278.my3w.com','bdm257248278','hzlxy0202','bdm257248278_db',charset='utf8')#连接
+conn = MySQLdb.connect('','','','',charset='utf8')#连接
 with conn:
 	cur = conn.cursor()#让python获得执行sql的权限
 	num = 0
