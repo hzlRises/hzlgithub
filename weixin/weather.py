@@ -46,7 +46,8 @@ def main():
 	itchat.auto_login(hotReload=True)
 	while True:
 		time.sleep(1)
-		current_time = time.localtime(time.time())#
+		current_time = time.localtime(time.time())
+		print time.strftime('%Y-%m-%d %H:%M:%S',time.localtime(time.time()))	
 		if ((current_time.tm_hour == 7) and (current_time.tm_min) == 30 and (current_time.tm_sec == 0)):
 			save_jpg()
 
