@@ -37,7 +37,7 @@ def save_jpg():
 		itchat.send_image('send_%s.png'%index,toUserName = userName)
 		
 		user_content_baby = itchat.search_friends(name=u'')
-		userName_baby = user_content[0]['UserName']
+		userName_baby = user_content_baby[0]['UserName']
 		itchat.send_image('send_%s.png'%index,toUserName = userName_baby)
 		
 
