@@ -1,6 +1,8 @@
 #coding:utf-8
 import itchat,json,time,requests,sys,urllib,os,re
 import jd
+from PIL import Image
+from selenium import webdriver
 #hzl
 reload(sys) 
 sys.setdefaultencoding('utf-8')
@@ -16,9 +18,12 @@ def send_msg_(message):
 # 注册消息响应事件，消息类型为itchat.content.TEXT，即文本消息
 def text_reply(msg):
 	print msg['Text']#unicode
-#	print type(msg['Text'])#unicode
-#	msg['Text'].encode("utf-8")  unicode转为 str
-#	print urllib.quote(msg['Text'].encode("utf-8"))	
+	'''
+	print type(msg['Text'])#unicode
+	msg['Text'].encode("utf-8")  unicode转为 str
+	print urllib.quote(msg['Text'].encode("utf-8"))	
+	'''
+	
 	if 'jd.com' in msg['Text'] and 'item' in msg['Text']:
 		sku_id = jd.getGoodsIdByUrl(msg['Text'])
 		goods_name,price,fanli = jd.getProductInfo(sku_id)		
@@ -54,7 +59,34 @@ def text_reply(msg):
 		url = r.url
 		duan_url = jd.getSelfCode(url)
 		short_url = jd.getShortUrl(duan_url)		
-		message = u'转链成功，推广链接：'+short_url			
+		message = u'转链成功，推广链接：'+short_url	
+	elif 'xmtq' in msg['Text']:
+		weather_url = 'https://www.baidu.com/s?ie=UTF-8&wd=xmtq'	
+		browser = webdriver.PhantomJS(executable_path=r'D:\programfiles\anaconda\Lib\site-packages\selenium\webdriver\phantomjs\bin\phantomjs.exe')
+		browser.get(weather_url)
+		browser.maximize_window()
+		browser.save_screenshot('send_auto_answes.png')#保存截图	
+		
+		#获取天气模板的位置、尺寸大小
+		imgelement = browser.find_element_by_xpath('//*[@id="1"]')
+		location = imgelement.location#获取天气x,y轴坐标
+		size = imgelement.size#获取天气的长宽
+		
+		
+		rangle = (int(location['x']),int(location['y']),int(location['x']+size['width']),int(location['y']+size['height']-20))
+		i = Image.open('send_auto_answes.png')	#打开0.png
+		tinaqi = i.crop(rangle)#使用Image的crop函数，从截图中再次截取我们需要的		
+		tinaqi.save('send_auto_answes_0.png')		
+		browser.close()	
+		
+		itchat.send_image('send_auto_answes_0.png',msg.fromUserName)
+		
+		'''
+		user_content = itchat.search_friends(name=u'雨一直下')
+		userName = user_content[0]['UserName']
+		itchat.send_image('send_%s.png'%index,toUserName = userName)
+		'''
+		
 	else:
 		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
 		message = u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s\n-----------\n发送【帮助】查看使用机器人流程\n更多大额神券商品点击下方链接：\nhttp://t.cn/RTzLM6g'%(msg['Text'],jd.getShortUrl(url))
