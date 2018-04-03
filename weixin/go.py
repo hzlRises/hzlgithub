@@ -17,6 +17,7 @@ def send_msg_(message):
 @itchat.msg_register(itchat.content.TEXT)
 # 注册消息响应事件，消息类型为itchat.content.TEXT，即文本消息
 def text_reply(msg):
+	key = ''
 	print msg['Text']#unicode
 	'''
 	print type(msg['Text'])#unicode
@@ -60,8 +61,14 @@ def text_reply(msg):
 		duan_url = jd.getSelfCode(url)
 		short_url = jd.getShortUrl(duan_url)		
 		message = u'转链成功，推广链接：'+short_url	
-	elif 'xmtq' in msg['Text']:
-		weather_url = 'https://www.baidu.com/s?ie=UTF-8&wd=xmtq'	
+	
+	elif 'xmtq' in msg['Text'] or '天气预报' in msg['Text']:
+		
+		if 'xmtq' in msg['Text']:
+			key = 'xmtq'
+		else:
+			key = 'beijingtianqi'
+		weather_url = 'https://www.baidu.com/s?ie=UTF-8&wd=%s'%key
 		browser = webdriver.PhantomJS(executable_path=r'D:\programfiles\anaconda\Lib\site-packages\selenium\webdriver\phantomjs\bin\phantomjs.exe')
 		browser.get(weather_url)
 		browser.maximize_window()
@@ -91,6 +98,7 @@ def text_reply(msg):
 		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
 		message = u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s\n-----------\n发送【帮助】查看使用机器人流程\n更多大额神券商品点击下方链接：\nhttp://t.cn/RTzLM6g'%(msg['Text'],jd.getShortUrl(url))
 
+	
 	print message
 	itchat.send(message,msg.fromUserName)
 	
@@ -109,10 +117,10 @@ def sharing_reply(msg):
 		try:
 			sku_id = jd.getGoodsIdByUrl(msg['Url'])
 			goods_name,price,fanli = jd.getProductInfo(sku_id)		
-			click_url = jd.getFanliLink(sku_id)		
+			click_url = jd.getFanliLink(sku_id)
 			message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
 		except Exception,e:
-			message = u'请您确定是从京东APP的商品【详情页】分享的链接哦。'	
+			message = u'此商品暂时没有返利。。。'	
 	else:
 		message = u'请您确定是从京东APP的商品【详情页】分享的链接哦。'
 	itchat.send(message,msg.fromUserName)
