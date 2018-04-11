@@ -75,7 +75,10 @@ def main():
 			print e
 			
 		time.sleep(0.1)
-		wb.save("result.xls")
+		try:
+			wb.save("result.xls")
+		except Exception,e:
+			print e
 		
 	
 if __name__ == '__main__':
