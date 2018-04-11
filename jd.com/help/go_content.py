@@ -63,8 +63,12 @@ def main():
 				sheet.write(index+1,9,content_txt)
 			else:
 				sheet.write(index+1,9,title)
-			sheet.write(index+1,10,content_str)
-			
+			if len(content_str) < 32767:
+				sheet.write(index+1,10,content_str)
+			else:
+				sheet.write(index+1,10,'String longer than 32767 characters')
+			wb.save("result.xls")
+			continue
 			
 			'''
 			content = [soup.extract() for soup in s('img')]#删除文章里的img标签
@@ -74,12 +78,8 @@ def main():
 		except Exception,e:
 			print e
 			
-		time.sleep(0.1)
-		try:
-			wb.save("result.xls")
-		except Exception,e:
-			print e
-		
+			
+		time.sleep(0.1)		
 	
 if __name__ == '__main__':
 	main()
