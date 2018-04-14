@@ -33,24 +33,38 @@ def main():
 		
 		#抓正文规则
 		try:
-			browser = webdriver.PhantomJS(executable_path=r'D:\programfiles\anaconda\Lib\site-packages\selenium\webdriver\phantomjs\bin\phantomjs.exe')
+			#browser = webdriver.PhantomJS(executable_path=r'D:\programfiles\anaconda\Lib\site-packages\selenium\webdriver\phantomjs\bin\phantomjs.exe')
+			browser = webdriver.PhantomJS()
 			browser.get(url)
 
 			content_main = browser.find_element_by_class_name("detail_cont_main").get_attribute('innerHTML')
 			s = BeautifulSoup(content_main,"lxml")			
 			
+			#删除商品部分，type=3, 删除头部标题部分
 			content = [soup.extract() for soup in s('div',attrs={"class":"detail_cm_item detail_cm_goods"})]
 			content = [soup.extract() for soup in s('div',attrs={"class":"detail_cm_head"})]
 			
 			
-			with open('asd.txt',r'w+') as my:
-				my.write(str(s))
 			
+			#因为懒加载，导致img的src值不是图片的url地址，需要处理
+			imatag = s.find_all('img')
+			for itag in imatag:
+				if '1x1'in itag.get('src'):
+					itag['src'] = itag.get('data-lazy-img')
+					itag['data-lazy-img'] = 'done'
+			
+			
+			
+			content_txt = str(s.get_text()).decode('utf-8')[0:250]#
+			
+			#替换掉不需要的标签
+			s = str(s).replace('<html>','').replace('</html>','').replace('<body>','').replace('</body>','')
+				
+			title = browser.find_element_by_tag_name("h3").text
 			'''
-			title = browser.find_elements_by_class_name("detail_cm_htitle").text
-			
 			txttag = browser.find_elements_by_class_name("detail_cm_text")#加个s
 			pictag = browser.find_elements_by_class_name("detail_cm_pic")#加个s
+			
 			for t in txttag:
 				content_str +=  '</p>'+t.text+'</p>'		
 				
@@ -59,11 +73,13 @@ def main():
 			'''
 		
 			
-			'''
+			
 			m1 = md5.new()
 			m1.update(title)			
 			md5_str = m1.hexdigest()[8:-8]#取中间16位
 			
+			
+			content = s.decode('utf-8')
 			
 			sheet.write(index+1,0,'148')#categoryID帮助中心
 			sheet.write(index+1,1,'1')#status未审核
@@ -80,16 +96,16 @@ def main():
 				sheet.write(index+1,9,title)
 				
 			if len(content) < 32767:
-				sheet.write(index+1,10,content+'</div>')
+				sheet.write(index+1,10,content)
 			else:
 				sheet.write(index+1,10,'String longer than 32767 characters')
 			wb.save("result.xls")
-			'''
+			
 			
 			
 		except Exception,e:
 			print e
-		break
+		print index
 			
 		time.sleep(0.1)		
 		
