@@ -122,3 +122,106 @@ def main():
 	browser.quit()
 if __name__ == '__main__':
 	main()
+	
+	
+	
+'''
+
+#coding:utf-8
+import requests,sys,re,pycurl,StringIO,time,xlrd,xlwt,HeaderData,md5,json
+from bs4 import BeautifulSoup
+import urllib
+from selenium import webdriver
+reload(sys) 
+sys.setdefaultencoding('utf-8')
+
+
+def get_title_md5(title):
+	m1 = md5.new()
+	m1.update(title)			
+	md5_str = m1.hexdigest()[8:-8]#取中间16位	
+	return md5_str	
+
+def main():	
+
+	wb = xlwt.Workbook()
+	sheet = wb.add_sheet('sheet1')
+	sheet.write(0,0,'categoryID')#categoryID帮助中心
+	sheet.write(0,1,'status')#status未审核
+	sheet.write(0,2,'recommend')#recommend未推荐
+	sheet.write(0,3,'type')#type运营添加
+	sheet.write(0,4,'tag')#tag标签
+	sheet.write(0,5,'source')#文章来源
+	sheet.write(0,6,'writer')#作者
+	sheet.write(0,7,'md5_id')
+	sheet.write(0,8,'title')
+	sheet.write(0,9,'description')
+	sheet.write(0,10,'content')	
+	
+	
+	content_url_list = [url.strip() for url in open('jrhelp.jd.com_index_detail_url.txt')]
+	#https://article.jd.com/?id=987009	
+	
+	for index,k in enumerate(content_url_list):	
+		content_str = ''
+		try:
+			#&callback=detailCallback 不能加这个callback
+			url = 'https://ai.jd.com/index_new.php?app=Discovergoods&action=getInfoDetail&id=%s&_=1523585550165'%str(k.strip())#获取文件中的url，具体根据txt里字段定
+			
+		except Exception,e:
+			print e
+		
+		#抓正文规则
+		try:
+			#browser = webdriver.PhantomJS(executable_path=r'D:\programfiles\anaconda\Lib\site-packages\selenium\webdriver\phantomjs\bin\phantomjs.exe')
+			r = requests.get(url,headers=HeaderData.get_header(),timeout=60)	
+			
+			j_data = json.loads(r.content,strict=False)
+			
+			title = j_data["detail"]["data"]["title"]
+			
+			content_txt =  j_data["detail"]["data"]["description"][0]["content"]
+			
+			
+			for description in j_data["detail"]["data"]["description"]:
+				
+				#文字
+				if int(description["type"]) == 1 and description["content"] != '':
+					description["content"] = '<p>'+description["content"]+'</p>'
+					content_str += description["content"]
+				#图片	
+				if int(description["type"]) == 2:
+					#<img src="//m.360buyimg.com/mobilecms/s900x600_jfs/t18271/212/1584660613/140181/b781eba6/5ace1866N81962c9a.jpg!q70.jpg" data-lazy-img="done">
+					description["content"] = '<p><img src="//m.360buyimg.com/'+description["content"]+' "></p>'
+					
+					content_str += description["content"]		
+			
+			
+			sheet.write(index+1,0,'148')#categoryID帮助中心
+			sheet.write(index+1,1,'1')#status未审核
+			sheet.write(index+1,2,'1')#recommend未推荐
+			sheet.write(index+1,3,'0')#type运营添加
+			sheet.write(index+1,4,'jd')#tag标签
+			sheet.write(index+1,5,'jd')#文章来源
+			sheet.write(index+1,6,'jd')#作者
+			sheet.write(index+1,7,get_title_md5(title))
+			sheet.write(index+1,8,title)				
+			sheet.write(index+1,9,content_txt)
+			if len(content_str) < 32767:
+				sheet.write(index+1,10,content_str)
+			else:
+				sheet.write(index+1,10,'String longer than 32767 characters')
+			wb.save("result.xls")
+			
+		except Exception,e:
+			print e
+		print index,k.strip()
+		
+		time.sleep(0.1)	
+
+if __name__ == '__main__':
+	main()
+
+
+'''
+	
