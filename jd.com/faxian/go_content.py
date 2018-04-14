@@ -23,6 +23,18 @@ def main():
 			
 	content_url_list = [url.strip() for url in open('jrhelp.jd.com_index_detail_url.txt')]
 	#https://article.jd.com/?id=987009
+	
+	
+	service_args = []
+	service_args.append('--load-images=no')  #关闭图片加载
+	service_args.append('--disk-cache=yes')  #开启缓存
+	service_args.append('--ignore-ssl-errors=true') #忽略https错误
+	
+	browser = webdriver.PhantomJS(service_args=service_args)
+	
+	browser.implicitly_wait(30)        #设置超时时间
+	browser.set_page_load_timeout(30)  #设置超时时间
+	
 	for index,k in enumerate(content_url_list):	
 		content_str = ''
 		try:
@@ -34,7 +46,6 @@ def main():
 		#抓正文规则
 		try:
 			#browser = webdriver.PhantomJS(executable_path=r'D:\programfiles\anaconda\Lib\site-packages\selenium\webdriver\phantomjs\bin\phantomjs.exe')
-			browser = webdriver.PhantomJS()
 			browser.get(url)
 
 			content_main = browser.find_element_by_class_name("detail_cont_main").get_attribute('innerHTML')
@@ -108,6 +119,6 @@ def main():
 		print index
 			
 		time.sleep(0.1)		
-		
+	browser.quit()
 if __name__ == '__main__':
 	main()
