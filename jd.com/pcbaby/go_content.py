@@ -6,8 +6,6 @@ from selenium import webdriver
 reload(sys) 
 sys.setdefaultencoding('utf-8')
 
-filename = 'yunqian'
-
 categoryID = '000'
 
 
@@ -105,6 +103,17 @@ def get_max_page(id):
 		return '1',title
 		
 		
+def digui_(url):
+	content = 'the page you are looking for is currently unavailable'
+	for i range(0,10):
+		r = requests.get(url,headers=HeaderData.get_header(),timeout=60)
+		if 'unavailable' in r.content:
+			time.sleep(3)
+			digui_(url)
+		else:
+			return r.content	
+	return content
+		
 def main():	
 	wb = xlwt.Workbook()
 	sheet = wb.add_sheet('sheet1')
@@ -122,23 +131,33 @@ def main():
 	sheet.write(0,11,'origin_url')
 	
 	#www.ixinwei.com/2018/01/09/86590.html
-	content_url_list = [url.strip() for url in open('%s_long_url.txt'%filename)]
+	content_url_list = [url.strip() for url in open('long_url.txt')]
 	
 	
 	for index,k in enumerate(content_url_list):	
 		content_str = ''
 		content_txt = ''
+		title = ''
 		try:
 			url = 'https:'+k .strip()
 			r = requests.get(url,headers=HeaderData.get_header(),timeout=60)
-			s = BeautifulSoup(r.content,"lxml")
-			title = s.find('p',attrs={"class":"fl"}).get_text()
-			content_str = s.find('div',attrs={"class":"art-text"})
-			content_txt = str(s.find('div',attrs={"class":"art-text"}).get_text()[0:250]).decode('utf-8')	
-			content_str = clear_html(content_str)
+			if 'unavailable' in r.content:#请求网页失败，继续请求
+				print 'pause..'
+				time.sleep(2)				
+				s = BeautifulSoup(digui_(url),"lxml")				
+				content_str = clear_html(content_str)				
+				title = s.find('p',attrs={"class":"fl"}).get_text()
+				content_txt = str(s.find('div',attrs={"class":"art-text"}).get_text()[0:250]).decode('utf-8')
+				
+			else:				
+				s = BeautifulSoup(r.content,"lxml")				
+				title = s.find('p',attrs={"class":"fl"}).get_text()
+				content_str = s.find('div',attrs={"class":"art-text"})				
+				content_txt = str(s.find('div',attrs={"class":"art-text"}).get_text()[0:250]).decode('utf-8')	
+				content_str = clear_html(content_str)
 		except Exception,e:
 			print e			
-			with open('error_%s.txt'%filename,r'a+') as my:
+			with open('error.txt',r'a+') as my:
 				my.write(k .strip()+'\n')
 		#抓正文规则
 		try:			
@@ -158,7 +177,7 @@ def main():
 				sheet.write(index+1,10,'String longer than 32767 characters')
 				
 			sheet.write(index+1,11,k.strip())
-			wb.save("result_%s.xls"%filename)			
+			wb.save("result_pcbaby.xls")			
 		except Exception,e:
 			print e		
 		print index,k.strip()	
