@@ -161,6 +161,7 @@ def main():
 			wb.save("result_%s.xls"%filename)			
 		except Exception,e:
 			print e		
-		print index,k.strip()		
+		print index,k.strip()	
+		time.sleep(0.5)
 if __name__ == '__main__':
 	main()
