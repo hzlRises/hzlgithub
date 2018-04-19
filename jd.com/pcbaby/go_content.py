@@ -138,6 +138,8 @@ def main():
 			content_str = clear_html(content_str)
 		except Exception,e:
 			print e			
+			with open('error_%s.txt'%filename,r'a+') as my:
+				my.write(k .strip()+'\n')
 		#抓正文规则
 		try:			
 			sheet.write(index+1,0,categoryID)#categoryID帮助中心
