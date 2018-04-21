@@ -105,7 +105,7 @@ def get_max_page(id):
 		
 def digui_(url):
 	content = 'the page you are looking for is currently unavailable'
-	for i range(0,10):
+	for i in range(0,20):
 		r = requests.get(url,headers=HeaderData.get_header(),timeout=60)
 		if 'unavailable' in r.content:
 			time.sleep(3)
@@ -131,7 +131,8 @@ def main():
 	sheet.write(0,11,'origin_url')
 	
 	#www.ixinwei.com/2018/01/09/86590.html
-	content_url_list = [url.strip() for url in open('long_url.txt')]
+	content_url_list = ['//baike.pcbaby.com.cn/long/%s.html'%url for url in range(1,100000)]
+	
 	
 	
 	for index,k in enumerate(content_url_list):	
@@ -139,12 +140,19 @@ def main():
 		content_txt = ''
 		title = ''
 		try:
-			url = 'https:'+k .strip()
+			url = 'https:'+k.strip()
 			r = requests.get(url,headers=HeaderData.get_header(),timeout=60)
+			
+			#如果是404页面，直接跳过
+			if '404' in BeautifulSoup(r.content,"lxml").find('title').get_text():
+				break
+			
+			
 			if 'unavailable' in r.content:#请求网页失败，继续请求
 				print 'pause..'
-				time.sleep(2)				
-				s = BeautifulSoup(digui_(url),"lxml")				
+				time.sleep(5)
+				s = BeautifulSoup(digui_(url),"lxml")	
+				content_str = s.find('div',attrs={"class":"art-text"})
 				content_str = clear_html(content_str)				
 				title = s.find('p',attrs={"class":"fl"}).get_text()
 				content_txt = str(s.find('div',attrs={"class":"art-text"}).get_text()[0:250]).decode('utf-8')
@@ -158,14 +166,14 @@ def main():
 		except Exception,e:
 			print e			
 			with open('error.txt',r'a+') as my:
-				my.write(k .strip()+'\n')
+				my.write(k.strip()+'\n')
 		#抓正文规则
 		try:			
 			sheet.write(index+1,0,categoryID)#categoryID帮助中心
 			sheet.write(index+1,1,'1')#status未审核
 			sheet.write(index+1,2,'1')#recommend未推荐
 			sheet.write(index+1,3,'0')#type运营添加
-			sheet.write(index+1,4,get_tag(title))#tag标签
+			sheet.write(index+1,4,'jd')#tag标签get_tag(title)
 			sheet.write(index+1,5,'jd')#文章来源
 			sheet.write(index+1,6,'jd')#作者
 			sheet.write(index+1,7,get_title_md5(title))
@@ -181,6 +189,7 @@ def main():
 		except Exception,e:
 			print e		
 		print index,k.strip()	
-		time.sleep(0.5)
+		#time.sleep(0.5)
+	
 if __name__ == '__main__':
 	main()
