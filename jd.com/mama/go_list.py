@@ -56,7 +56,7 @@ def main():
 				if atag.find('a'):
 					if 'art' in atag.find('a').get('href'):
 						a = atag.find('a').get('href')			
-						f.write(a+'\n')		
+						f.write(i+','+a+'\n')		
 				#else		
 			
 			'''
@@ -72,7 +72,7 @@ def main():
 		except Exception,e:
 			print e			
 		time.sleep(0.1)
-		
+
 if __name__ == '__main__':
 	f = open('z_art_url.txt',r'a+')
 	main()
