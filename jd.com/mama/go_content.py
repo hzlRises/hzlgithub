@@ -8,7 +8,6 @@ sys.setdefaultencoding('utf-8')
 
 categoryID = '000'
 
-
 def get_title_md5(title):
 	m1 = md5.new()
 	m1.update(title)			
@@ -65,9 +64,7 @@ def clear_html(content_str):
 	content_str = content_str.replace('<span></span>','')	
 	
 
-	return content_str
-	
-	
+	return content_str	
 	
 def get_tag(title):	
 	tag = ''
@@ -82,37 +79,7 @@ def get_tag(title):
 	if tag:
 		return tag
 	else:
-		return 'jd'
-
-		
-def get_max_page(id):	
-	url = 'http://www.ixinwei.com/newshow.aspx?id=%s&DevPage=1'%id
-	page_last_num = ''	
-	try:
-		r = requests.get(url,headers=HeaderData.get_header(),timeout=60)
-		page_list = re.findall('DevPage=(\d+)',r.content)	
-		page_last_num = page_list[-1]
-		title = re.search('<h1>(.*?)</h1>',r.content)
-		title = title.group(0).replace('<h1>','').replace('</h1>','')
-		
-	except Exception,e:
-		print e
-	if page_last_num:
-		return page_last_num,title
-	else:
-		return '1',title
-		
-		
-def digui_(url):
-	content = 'the page you are looking for is currently unavailable'
-	for i in range(0,20):
-		r = requests.get(url,headers=HeaderData.get_header(),timeout=60)
-		if 'unavailable' in r.content:
-			time.sleep(3)
-			digui_(url)
-		else:
-			return r.content	
-	return content
+		return 'jd'	
 		
 def main():	
 	wb = xlwt.Workbook()
@@ -131,7 +98,7 @@ def main():
 	sheet.write(0,11,'origin_url')
 	
 	#www.ixinwei.com/2018/01/09/86590.html
-	content_url_list = [url.split(',')[1] for url in open('z_url.txt')]
+	content_url_list = [url.strip() for url in open('z_art_url.txt')]
 	
 	
 	
@@ -140,12 +107,12 @@ def main():
 		content_txt = ''
 		title = ''
 		try:
-			url = 'https:'+k.strip()
+			url = k.split(',')[2]
 			r = requests.get(url,headers=HeaderData.get_header(),timeout=60)
 			s = BeautifulSoup(r.content,"lxml")				
-			title = s.find('p',attrs={"class":"fl"}).get_text()
-			content_str = s.find('div',attrs={"class":"art-text"})				
-			content_txt = str(s.find('div',attrs={"class":"art-text"}).get_text()[0:250]).decode('utf-8')	
+			title = s.find('h1').get_text()
+			content_str = s.find('div',attrs={"class":"mod-ctn"})				
+			content_txt = str(s.find('div',attrs={"class":"mod-ctn"}).get_text()[0:250]).decode('utf-8')	
 			content_str = clear_html(content_str)
 		except Exception,e:
 			print e			
@@ -157,7 +124,7 @@ def main():
 			sheet.write(index+1,1,'1')#status未审核
 			sheet.write(index+1,2,'1')#recommend未推荐
 			sheet.write(index+1,3,'0')#type运营添加
-			sheet.write(index+1,4,'jd')#tag标签get_tag(title)
+			sheet.write(index+1,4,get_tag(title))#tag标签
 			sheet.write(index+1,5,'jd')#文章来源
 			sheet.write(index+1,6,'jd')#作者
 			sheet.write(index+1,7,get_title_md5(title))
@@ -168,12 +135,11 @@ def main():
 			else:
 				sheet.write(index+1,10,'String longer than 32767 characters')
 				
-			sheet.write(index+1,11,k.strip())
-			wb.save("result_mama.cn.xls")			
+			sheet.write(index+1,11,k)
+			wb.save("result_mama.cn.xls")
 		except Exception,e:
 			print e		
-		print k.strip()	
+		print index,url
 		#time.sleep(0.5)
-	
 if __name__ == '__main__':
 	main()
