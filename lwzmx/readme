@@ -1,14 +1,8 @@
-2018年4月25日00:29:12
-
-往dede_addonarticle里插数据，没问题 
-
-
-2018年4月25日12:07:37
-设置往dede_archives里插数据，还没测试
-
-
-
-2018年4月25日22:25:38
+采集回来的文章必须要有的字段
+body
+title
+keywords
+description
 
 
 1、从lwzmx_addonarcticle.xlsx 向 dede_addonarticle插入数据
