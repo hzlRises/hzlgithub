@@ -199,3 +199,75 @@ def main():
 		
 if __name__ == '__main__':
 	main()
+'''
+#这个要慎用，可能会把img的src删掉
+content_str = re.sub(r'style=[\s\S]*?>','>',content_str)
+
+#制表、换行
+content_str = content_str.replace('\t','').replace('\n','')	
+
+#清除文章内的a链接
+content_str = re.sub(r'<a[\s\S]*?>','',content_str)
+content_str = re.sub(r'</a>','',content_str)
+
+#正文内常用标签
+content_str = re.sub(r'<div[\s\S]*?>','<div>',content_str)
+content_str = re.sub(r'<p[\s\S]*?>','<p>',content_str)
+content_str = re.sub(r'<strong[\s\S]*?>','<strong>',content_str)
+content_str = re.sub(r'<span[\s\S]*?>','<span>',content_str)
+content_str = re.sub(r'<font[\s\S]*?>','<font>',content_str)
+
+content_str = re.sub(r'<em[\s\S]*?>','<em>',content_str)
+content_str = re.sub(r'<small[\s\S]*?>','<small>',content_str)
+content_str = re.sub(r'<blockquote[\s\S]*?>','<blockquote>',content_str)
+content_str = re.sub(r'<pre[\s\S]*?>','<pre>',content_str)
+content_str = re.sub(r'<b[\s\S]*?>','<b>',content_str)
+content_str = re.sub(r'<i[\s\S]*?>','<i>',content_str)
+content_str = re.sub(r'<u[\s\S]*?>','<u>',content_str)
+
+
+
+content_str = re.sub(r'<table[\s\S]*?>','<table>',content_str)
+content_str = re.sub(r'<tbody[\s\S]*?>','<tbody>',content_str)
+content_str = re.sub(r'<tr[\s\S]*?>','<tr>',content_str)
+content_str = re.sub(r'<th[\s\S]*?>','<th>',content_str)
+content_str = re.sub(r'<td[\s\S]*?>','<td>',content_str)
+content_str = re.sub(r'<col[\s\S]*?>','<col>',content_str)
+content_str = re.sub(r'<colgroup[\s\S]*?>','<colgroup>',content_str)
+
+
+#列表
+content_str = re.sub(r'<ol[\s\S]*?>','<ol>',content_str)
+content_str = re.sub(r'<ul[\s\S]*?>','<ul>',content_str)
+content_str = re.sub(r'<li[\s\S]*?>','<li>',content_str)
+content_str = re.sub(r'<dl[\s\S]*?>','<dl>',content_str)
+content_str = re.sub(r'<dd[\s\S]*?>','<dd>',content_str)
+content_str = re.sub(r'<dt[\s\S]*?>','<dt>',content_str)
+
+	
+
+#敏感词
+content_str = content_str.replace('阿里巴巴','')
+content_str = content_str.replace('淘宝','')
+content_str = content_str.replace('天猫','')
+content_str = content_str.replace('国美','')
+content_str = content_str.replace('苏宁','')
+content_str = content_str.replace('ali','')
+content_str = content_str.replace('alibaba','')
+content_str = content_str.replace('taobao','')
+content_str = content_str.replace('tmall','')
+content_str = content_str.replace('gome','')
+content_str = content_str.replace('suning','')
+content_str = content_str.replace('美乐乐','')
+content_str = content_str.replace('小编','')
+content_str = content_str.replace('【','')
+content_str = content_str.replace('】','')
+content_str = content_str.replace('（','')
+content_str = content_str.replace('）','')	
+content_str = content_str.replace('<span></span>','')
+
+
+
+
+
+'''
