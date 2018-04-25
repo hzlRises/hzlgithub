@@ -5,3 +5,21 @@
 
 2018年4月25日12:07:37
 设置往dede_archives里插数据，还没测试
+
+
+
+2018年4月25日22:25:38
+
+
+1、从lwzmx_addonarcticle.xlsx 向 dede_addonarticle插入数据
+  
+aid,typeid,body,redirecturl,templet,userip
+
+2、从 lwzmx_archives.xlsx 向 dede_archives插入数据
+id,typeid,typeid2,sortrank,flag,ismake,channel,arcrank,click,money,title,shorttitle,color,writer,source,litpic,pubdate,senddate,mid,keywords,lastpost,scores,goodpost,badpost,voteid,notpost,description,filename,dutyadmin,tackid,mtype,weight
+
+3、从 lwzmx_archives.xlsx 向 dede_arctiny插入数据
+id,typeid,typeid2,arcrank,channel,senddate,sortrank,mid
+
+
+插入注意引号问题
