@@ -1,9 +1,13 @@
-采集回来的文章必须要有的字段
+采集回来的文章必须要有的字段：
 body
 title
 keywords
 description
 tag标签
+文章所属类目
+
+
+
 
 
 1、从lwzmx_addonarcticle.xlsx 向 dede_addonarticle插入数据
