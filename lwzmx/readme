@@ -22,3 +22,11 @@ id,typeid,typeid2,arcrank,channel,senddate,sortrank,mid
 
 
 插入注意引号问题
+
+
+dede_tagindex
+id	tag	typeid	count	total	weekcc	monthcc	weekup	monthup	addtime
+
+
+dede_taglist
+tid	aid	arcrank	typeid	tag
