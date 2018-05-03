@@ -136,14 +136,33 @@ reload(sys)
 sys.setdefaultencoding('utf-8')
 
 
+
+def get_tag(title):	
+	tag = ''
+	url = 'http://custom.p-search.jd.local/?pagesize=1&qp_disable=no&client=1489048679639&key=%s'%urllib.quote(title.encode('gbk'))
+	r = requests.get(url)
+	
+	#JSON.Head.Query.WordSearchInfo.ShowWordOne
+	try:
+		j_data = json.loads(r.content.decode('gbk'))#.encode('utf-8')
+		tag = j_data["Head"]["Query"]["WordSearchInfo"]["ShowWordOne"]	
+	except Exception,e:
+		print e		
+	if tag:
+		#print type(tag)
+		return tag
+	else:
+		return 'jd'
+
+		
+		
 def get_title_md5(title):
 	m1 = md5.new()
 	m1.update(title)			
 	md5_str = m1.hexdigest()[8:-8]#取中间16位	
 	return md5_str	
-
+	
 def main():	
-
 	wb = xlwt.Workbook()
 	sheet = wb.add_sheet('sheet1')
 	sheet.write(0,0,'categoryID')#categoryID帮助中心
@@ -156,17 +175,19 @@ def main():
 	sheet.write(0,7,'md5_id')
 	sheet.write(0,8,'title')
 	sheet.write(0,9,'description')
-	sheet.write(0,10,'content')	
+	sheet.write(0,10,'content')
+	sheet.write(0,11,'typename')
 	
 	
-	content_url_list = [url.strip() for url in open('jrhelp.jd.com_index_detail_url.txt')]
-	#https://article.jd.com/?id=987009	
+	#content_url_list = [url.strip() for url in open('jdiscover_detail_url.txt')]
+	#https://article.jd.com/?id=987009
 	
-	for index,k in enumerate(content_url_list):	
+	for k in range(0,100):
 		content_str = ''
+		content_txt = ''
 		try:
 			#&callback=detailCallback 不能加这个callback
-			url = 'https://ai.jd.com/index_new.php?app=Discovergoods&action=getInfoDetail&id=%s&_=1523585550165'%str(k.strip())#获取文件中的url，具体根据txt里字段定
+			url = 'https://ai.jd.com/index_new.php?app=Discovergoods&action=getInfoDetail&id=%s&_=1523585550165'%k
 			
 		except Exception,e:
 			print e
@@ -178,10 +199,14 @@ def main():
 			
 			j_data = json.loads(r.content,strict=False)
 			
-			title = j_data["detail"]["data"]["title"]
+			title = j_data["detail"]["data"]["title"]			
+		
+			for description in j_data["detail"]["data"]["description"]:
+				if int(description["type"]) == 1 and description["content"] != '':		
+					content_txt = description["content"]
+					break
 			
-			content_txt =  j_data["detail"]["data"]["description"][0]["content"]
-			
+			typename = j_data["detail"]["data"]["typeName"]
 			
 			for description in j_data["detail"]["data"]["description"]:
 				
@@ -192,33 +217,33 @@ def main():
 				#图片	
 				if int(description["type"]) == 2:
 					#<img src="//m.360buyimg.com/mobilecms/s900x600_jfs/t18271/212/1584660613/140181/b781eba6/5ace1866N81962c9a.jpg!q70.jpg" data-lazy-img="done">
-					description["content"] = '<p><img src="//m.360buyimg.com/'+description["content"]+' "></p>'
+					description["content"] = '<p><img src="//m.360buyimg.com/'+description["content"]+'"></p>'
 					
 					content_str += description["content"]		
 			
-			
-			sheet.write(index+1,0,'148')#categoryID帮助中心
-			sheet.write(index+1,1,'1')#status未审核
-			sheet.write(index+1,2,'1')#recommend未推荐
-			sheet.write(index+1,3,'0')#type运营添加
-			sheet.write(index+1,4,'jd')#tag标签
-			sheet.write(index+1,5,'jd')#文章来源
-			sheet.write(index+1,6,'jd')#作者
-			sheet.write(index+1,7,get_title_md5(title))
-			sheet.write(index+1,8,title)				
-			sheet.write(index+1,9,content_txt)
+			sheet.write(k+1,0,'148')#categoryID帮助中心
+			sheet.write(k+1,1,'1')#status未审核
+			sheet.write(k+1,2,'1')#recommend未推荐
+			sheet.write(k+1,3,'0')#type运营添加
+			sheet.write(k+1,4,get_tag(title))#tag标签get_tag(title)
+			sheet.write(k+1,5,'jd')#文章来源
+			sheet.write(k+1,6,'jd')#作者
+			sheet.write(k+1,7,get_title_md5(title))
+			sheet.write(k+1,8,title)				
+			sheet.write(k+1,9,content_txt)
 			if len(content_str) < 32767:
-				sheet.write(index+1,10,content_str)
+				sheet.write(k+1,10,content_str)
 			else:
-				sheet.write(index+1,10,'String longer than 32767 characters')
+				sheet.write(k+1,10,'String longer than 32767 characters')
+			sheet.write(k+1,11,typename)
+				
 			wb.save("result.xls")
 			
 		except Exception,e:
 			print e
-		print index,k.strip()
+		print k
 		
 		time.sleep(0.1)	
-
 if __name__ == '__main__':
 	main()
 
