@@ -31,7 +31,7 @@ def main():
 		try:
 			headers = {'Content-Type':'text/plain'}
 			url = 'http://data.zz.baidu.com/urls'
-			params = {'site':'club.jd.com','token':'00Mteo2F4brQRR6S'}#,'type':'original'
+			params = {'site':'','token':''}#,'type':'original'
 			r = requests.post(url,params=params,headers=headers,data=open('part_%s.txt'%i,r'rb').read())
 			print r.content
 		except Exception,e:
