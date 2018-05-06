@@ -63,15 +63,15 @@ for i in range(0,txt_index+1):
 	#主动推送
 	
 	for link in open('yesterday_%s.txt'%i):
-		params_zd = {'site':'heziliang.cn','token':'Did6Hw3NtVVJxzYg'}
+		params_zd = {'site':'heziliang.cn','token':''}
 		r_zd = requests.post(url,params=params_zd,headers=headers,data=link.strip())
 		
 		#mip
-		params = {'site':'heziliang.cn','token':'Did6Hw3NtVVJxzYg','type':'mip'}
+		params = {'site':'heziliang.cn','token':'','type':'mip'}
 		r = requests.post(url,params=params,headers=headers,data=link.strip())
 		
 		#amp
-		params_m = {'site':'heziliang.cn','token':'Did6Hw3NtVVJxzYg','type':'amp'}
+		params_m = {'site':'heziliang.cn','token':'','type':'amp'}
 		r_m = requests.post(url,params=params_m,headers=headers,data=link.strip())
 		print 'zd_push:'+r_zd.content
 		print 'mip_push:'+r.content
