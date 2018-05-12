@@ -1,0 +1,4 @@
+1、后台传文章
+2、从接口中拿到刚才传的文章的各种字段，go.py
+3、result里vlookup各个字段对应好，go_json.py批量把格式化json加入到正文
+4、批量更新每一篇文章，update.py
