@@ -1,6 +1,22 @@
 #coding:utf-8
 
 import requests,json,xlwt,xlrd,time
+from bs4 import BeautifulSoup
+
+#给图片加alt title属性
+def get_alt(i,tags,content):
+	s = BeautifulSoup(content,"lxml")
+	img_tag = s.find_all('img')
+	for img in img_tag:	
+		img["alt"] = tags
+		img["title"] = tags
+	
+	str_content = str(s).decode('utf-8').replace('<html>','').replace('<body>','').replace('</html>','').replace('</body>','')
+	
+	print str_content
+	return str_content
+
+
 	
 def main():
 	filename = raw_input('input filename:')
@@ -16,7 +32,7 @@ def main():
 		"source":"%s"%t1.row_values(i)[3],
 		"author":"%s"%t1.row_values(i)[4],
 		"summary":"%s"%t1.row_values(i)[5],
-		"content":"%s"%t1.row_values(i)[6],
+		"content":"%s"%get_alt(i,t1.row_values(i)[2],t1.row_values(i)[6]),
 		}#%(t1.row_values(i)[0],t1.row_values(i)[1],t1.row_values(i)[2],t1.row_values(i)[3],t1.row_values(i)[4],t1.row_values(i)[5],t1.row_values(i)[6],t1.row_values(i)[9],t1.row_values(i)[11])
 		headers = {
 			"Accept": "*/*",
@@ -30,7 +46,7 @@ def main():
 			"Host": "yp-admin.jd.com",
 			"Origin": "http://yp-admin.jd.com",
 			"Pragma": "no-cache",
-			"Referer": "",
+			"Referer": "http://yp-admin.jd.com/articleManager/articleAddPage",
 			"Upgrade-Insecure-Requests": "1",
 			"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
 		}		
@@ -39,6 +55,7 @@ def main():
 		except Exception,e:
 			print e
 		print i
+		break
 		#time.sleep(0.1)
 		# if i == 100:
 			# break
@@ -47,10 +64,7 @@ def main():
 if __name__ == '__main__':
 	main()
 	
-'''
-title	categoryID	tags	source	author	summary	content
-
-'''
+	
 	
 	
 	
