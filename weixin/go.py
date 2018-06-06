@@ -1,5 +1,5 @@
 #coding:utf-8
-import itchat,json,time,requests,sys,urllib,os,re,fund
+import itchat,json,time,requests,sys,urllib,os,re
 import jd
 from PIL import Image
 from selenium import webdriver
@@ -91,11 +91,49 @@ def text_reply(msg):
 		'''
 		user_content = itchat.search_friends(name=u'雨一直下')
 		userName = user_content[0]['UserName']
-		itchat.send_image('send_%s.png'%index,toUserName = userName)
+		itchat.send_image('send_%s.png'%index,toUserName = userName)		
 		'''
 		
+		
 	elif '我的基金' in msg['Text']:
-		fund.get_fund()
+		fund_list = ['162605','160505','002121','000011','163402','070032','217027','165312','519066','110022']
+		for index,fund in enumerate(fund_list):
+			fund_id = str(fund)		
+			#url = 'https://www.baidu.com/s?ie=UTF-8&wd=%s'%str(fund_id)	
+			url = 'http://fund.eastmoney.com/%s.html'%str(fund_id)				
+			picName = 'fund_%s.png'%index
+			browser = webdriver.PhantomJS(executable_path=r'D:\programfiles\anaconda\Lib\site-packages\selenium\webdriver\phantomjs\bin\phantomjs.exe')
+			browser.get(url)
+			browser.maximize_window()
+			browser.save_screenshot(picName)#保存截图	
+			
+			
+			imgelement = browser.find_element_by_xpath('//*[@id="body"]/div[14]/div/div/div[1]')
+			'''
+			if fund_id == '002121':
+				imgelement = browser.find_element_by_xpath('//*[@id="2"]')
+			'''
+			location = imgelement.location#获取x,y轴坐标
+			size = imgelement.size#获取长宽
+			
+			rangle = (int(location['x']),int(location['y']),int(location['x']+size['width']),int(location['y']+size['height']-20))
+			i = Image.open(picName)	#打开
+			tinaqi = i.crop(rangle)#使用Image的crop函数，从截图中再次截取我们需要的		
+			tinaqi.save('send_fund_%s.png'%index)		
+			browser.close()	
+			
+			
+			#发送
+			user_content = itchat.search_friends(name=u'雨一直下')
+			userName = user_content[0]['UserName']
+			itchat.send_image('send_fund_%s.png'%index,toUserName = userName)
+			
+			'''
+			if fund_id in ['070032','217027','165312','519066','110022']:
+				user_content_baby = itchat.search_friends(name=u'徐莹')
+				userName_baby = user_content_baby[0]['UserName']
+				itchat.send_image('send_fund_%s.png'%index,toUserName = userName_baby)		
+			'''
 		
 	else:
 		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
@@ -117,12 +155,10 @@ def text_reply(msg):
 def sharing_reply(msg):
 	#print msg['Url']#['url']
 	if 'jd.com' in msg['Url'] and 'item' in msg['Url']:
-		try:			
+		try:
 			sku_id = jd.getGoodsIdByUrl(msg['Url'])
-			print sku_id
 			goods_name,price,fanli = jd.getProductInfo(sku_id)		
 			click_url = jd.getFanliLink(sku_id)
-			
 			message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
 		except Exception,e:
 			message = u'此商品暂时没有返利。。。'	
@@ -145,7 +181,6 @@ def group_reply_text(msg):
 		url = 'http://yhq.techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
 		
 		itchat.send(u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s'%(msg['Text'],url),'@@a3f3bfafe461ecb368a6c602e42d1cb6f4a26fca1fff90215a69653298af31b5')
-
 '''	
 # 处理好友添加请求
 @itchat.msg_register(itchat.content.FRIENDS)
