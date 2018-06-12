@@ -27,7 +27,7 @@ def getShortUrl(url):
 def getGoodsIdByUrl(url):
 	#url = 'https://item.m.jd.com/product/12673813270.html?&utm_source=iosapp&utm_medium=appshare&utm_campaign=t_335139774&utm_term=CopyURL'
 	if 'item' in url:
-		sku_id = url.split('/')[4].split('.')[0]	
+		sku_id = url.split('/')[4].split('.')[0]
 		return sku_id
 	'''
 	else:		
@@ -107,7 +107,8 @@ def getProductInfo(sku_id):
 	unitPrice = unicode_result['result'][0]['unitPrice']#商品价格
 	commisionRatioPc = unicode_result['result'][0]['commisionRatioPc']#佣金比例	
 	#返给用户的钱
-	fanli = round(unitPrice*commisionRatioPc/100*0.3,2)	
+	
+	fanli = round(unitPrice*commisionRatioPc/100*0.3,2)
 	'''
 	for k,v in unicode_result['result'][0].iteritems():
 		if k == 'goodsName':
