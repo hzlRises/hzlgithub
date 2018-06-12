@@ -27,7 +27,7 @@ def getShortUrl(url):
 def getGoodsIdByUrl(url):
 	#url = 'https://item.m.jd.com/product/12673813270.html?&utm_source=iosapp&utm_medium=appshare&utm_campaign=t_335139774&utm_term=CopyURL'
 	if 'item' in url:
-		sku_id = url.split('/')[-1].split('.')[0]	
+		sku_id = url.split('/')[4].split('.')[0]	
 		return sku_id
 	'''
 	else:		
