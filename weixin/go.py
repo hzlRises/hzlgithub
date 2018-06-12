@@ -137,7 +137,7 @@ def text_reply(msg):
 		
 	else:
 		url = 'http://techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
-		message = u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s\n-----------\n发送【帮助】查看使用机器人流程\n更多大额神券商品点击下方链接：\nhttp://t.cn/RTzLM6g'%(msg['Text'],jd.getShortUrl(url))
+		message = u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s\n-----------\n发送【帮助】查看使用机器人流程\n更多大额神券商品点击下方链接：\nhttp://t.cn/RYaBrUa'%(msg['Text'],jd.getShortUrl(url))
 
 	
 	print message
@@ -155,8 +155,8 @@ def text_reply(msg):
 def sharing_reply(msg):
 	#print msg['Url']#['url']
 	if 'jd.com' in msg['Url'] and 'item' in msg['Url']:
-		try:
-			sku_id = jd.getGoodsIdByUrl(msg['Url'])
+		try:			
+			sku_id = jd.getGoodsIdByUrl(msg['Url'])			
 			goods_name,price,fanli = jd.getProductInfo(sku_id)		
 			click_url = jd.getFanliLink(sku_id)
 			message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
