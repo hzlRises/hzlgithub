@@ -72,7 +72,7 @@ def clear_html(content_str):
 	
 def get_tag(title):	
 	tag = ''
-	url = 'http://172.17.57.225/?pagesize=1&qp_disable=no&client=1489048679639&key=%s'%urllib.quote(title.encode('gbk'))
+	url = '?pagesize=1&qp_disable=no&client=&key=%s'%urllib.quote(title.encode('gbk'))
 	r = requests.get(url)
 	#JSON.Head.Query.WordSearchInfo.ShowWordOne
 	try:
