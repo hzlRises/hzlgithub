@@ -139,7 +139,7 @@ sys.setdefaultencoding('utf-8')
 
 def get_tag(title):	
 	tag = ''
-	url = 'http://custom.p-search.jd.local/?pagesize=1&qp_disable=no&client=1489048679639&key=%s'%urllib.quote(title.encode('gbk'))
+	url = '/?pagesize=1&qp_disable=no&client=&key=%s'%urllib.quote(title.encode('gbk'))
 	r = requests.get(url)
 	
 	#JSON.Head.Query.WordSearchInfo.ShowWordOne
