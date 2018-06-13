@@ -28,10 +28,10 @@ def main():
 			"Content-Length": "",		
 			"Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",		
 			"Cookie": '''''',
-			"Host": "yp-admin.jd.com",
-			"Origin": "http://yp-admin.jd.com",
+			"Host": "",
+			"Origin": "",
 			"Pragma": "no-cache",
-			"Referer": "http://yp-admin.jd.com/articleManager/articleEditPage?id=%s"%int(t1.row_values(i)[0]),
+			"Referer": "%s"%int(t1.row_values(i)[0]),
 			"Upgrade-Insecure-Requests": "1",
 			"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
 		}	
