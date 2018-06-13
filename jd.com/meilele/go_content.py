@@ -73,7 +73,7 @@ def get_tag(title):
 	tag = ''
 	url = '?pagesize=1&qp_disable=no&client=&key=%s'%urllib.quote(title.encode('gbk'))
 	r = requests.get(url)
-	#JSON.Head.Query.WordSearchInfo.ShowWordOne
+	#JSON.Head.Query.WordSearchInfo.ShowWordOne        99999
 	try:
 		j_data = json.loads(r.content.decode('gbk').encode('utf-8'))
 		tag = j_data["Head"]["Query"]["WordSearchInfo"]["ShowWordOne"]	
