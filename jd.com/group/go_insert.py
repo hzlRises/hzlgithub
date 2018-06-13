@@ -23,7 +23,7 @@ def main():
 	t1 = data.sheets()[0]#第一张表
 	rows = t1.nrows#获取行数
 	for i in range(1,rows):
-		url = 'http://yp-admin.jd.com/articleManager/submitAdd'		
+		url = ''		
 		payload={
 		"title":"%s"%t1.row_values(i)[0],
 		"categoryID":"%s"%int(t1.row_values(i)[1]),
