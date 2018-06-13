@@ -10,7 +10,7 @@ def get_header():
 		"Cache-Control": "no-cache",
 		"Connection": "keep-alive",		
 		"Cookie": '''''',
-		"Host": "yp-admin.jd.com",
+		"Host": "",
 		"Pragma": "no-cache",
 		"Upgrade-Insecure-Requests": "1",
 		"User-Agent": "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36",
