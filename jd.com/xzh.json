@@ -1,0 +1,38 @@
+<script type="application/ld+json">{
+        "@context": "https://ziyuan.baidu.com/contexts/cambrian.jsonld",
+        "@id": "https://m.jd.com/phb/zhishi/bad2b170c5119bf4.html",
+        "appid": "",
+        "title": "京东618游戏本增速达77% 成新品首发平台",        
+        "pubDate": "2018-06-14T11:46:00", 
+        "data": {
+                "WebPage": {
+                        "headline": "京东618游戏本增速达77% 成新品首发平台",                        
+                        "fromSrc": "京东",
+                        "domain": "购物",
+                        "category": [
+                                "问答"
+                        ]
+                },
+                "Question": [
+                        {
+							"从6月1日开启的京东年中购物狂欢节已经过去一多半的，而在这几天的购物狂欢当中，京东平台每日都在创造刷新纪录，并屡次在不同品类中创下销售佳绩"
+                        }
+                ],
+                "ImageObject": [
+                        {
+                                "contentUrl": "http://img30.360buyimg.com/jdsurvey/jfs/t20284/253/88022964/203179/fe4a50c9/5afa99e1Ncccce1ce.png",
+                                "scale": "5:2"
+                        }
+                ],
+                "Author": [
+                        {
+                                "name": "京东",                                
+                                "jobTitle": [
+                                        "京东官方帮助中心"
+                                ],
+                                "headPortrait": "https://img30.360buyimg.com/jdsurvey/jfs/t19627/297/391967938/15921/8ec4f397/5a73c7a9Nebc3d1d6.jpg"
+                        }
+                ]
+                
+        }
+}</script>
