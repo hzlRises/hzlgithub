@@ -1,5 +1,5 @@
 #coding:utf-8
-import itchat,json,time,requests,sys,urllib,os,re
+import itchat,json,time,requests,sys,urllib,os,re,weather
 import jd
 from PIL import Image
 from selenium import webdriver
@@ -16,7 +16,9 @@ def send_msg_(message):
 
 @itchat.msg_register(itchat.content.TEXT)
 # 注册消息响应事件，消息类型为itchat.content.TEXT，即文本消息
+
 def text_reply(msg):
+	message = ''
 	key = ''
 	print msg['Text']#unicode
 	'''
@@ -46,11 +48,11 @@ def text_reply(msg):
 		itchat.send( friend_name+u'申请提现',toUserName = userName)				
 		#判断提现人性别
 		if friend_content['Sex'] == 1:
-			message = friend_name +u'帅哥请耐心等待哦，由于人数较多，客服火速确认中'		
+			message = friend_name +u'帅哥请耐心等待，客服确认中'	
 		elif friend_content['Sex'] == 0:
-			message = friend_name +u'美女请耐心等待哦，由于人数较多，客服火速确认中'
+			message = friend_name +u'美女请耐心等待，客服确认中'
 		else:
-			message = friend_name +u'请耐心等待哦，由于人数较多，客服火速确认中'			
+			message = friend_name +u'请耐心等待，客服确认中'			
 	
 	#活动页转链接
 	elif 'hzlxy' in msg['Text']:
@@ -142,8 +144,10 @@ def text_reply(msg):
 	else:
 		#url = 'http://techseo.cn/yhq/?r=l&kw=%s'%(urllib.quote(msg['Text'].encode("utf-8")))
 		#message = u'一一一一导 购 信 息一一一一\n已为您找到:%s\n点击下方链接查看\n%s\n-----------\n发送【帮助】查看使用机器人流程\n更多大额神券商品点击下方链接：\nhttp://t.cn/RYaBrUa'%(msg['Text'],jd.getShortUrl(url))
-		message = '您输入的指令有误，请发送【帮助】查看教程'
-	print message
+		#message = '您输入的指令有误，请发送【帮助】查看教程'
+		pass
+	# if message:
+		# print message
 	itchat.send(message,msg.fromUserName)
 	
 	#记录
@@ -164,9 +168,9 @@ def sharing_reply(msg):
 			click_url = jd.getFanliLink(sku_id)
 			message = u'一一一一返 利 信 息一一一一\n'+goods_name+'\n'+u'【商品原价】'+price+'元'+'\n'+u'【商品返利】'+fanli+'元'+'\n'+u'【返利链接】'+jd.getShortUrl(click_url)
 		except Exception,e:
-			message = u'此商品暂时没有返利。。。'	
+			message = u'此商品暂时无返利。'	
 	else:
-		message = u'请您确定是从京东APP的商品【详情页】分享的链接哦。'
+		message = u'请您确定是从京东APP的商品详情页分享的链接哦。'
 	itchat.send(message,msg.fromUserName)
 	now = time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(time.time()))
 	with open('log.txt',r'a+') as my:
@@ -191,18 +195,15 @@ def add_friend(msg):
     # 该操作会自动将新好友的消息录入，不需要重载通讯录
     itchat.add_friend(**msg['Text'])
     # 加完好友后，给好友打个招呼
-    #itchat.send_msg('[愉快]你好，我是微信自动回复消息机器人\n[抠鼻]想在淘宝/天猫买东西？直接把关键词发给我，机器人帮你找相关商品优惠券。\n[抠鼻]想在京东买东西？把链接发给我，机器人给你发返利红包\n--------------\n发送【帮助】查看使用机器人流程。', msg['RecommendInfo']['UserName'])
-    itchat.send_msg('[愉快]你好，我是网购优惠券、返利机器人，\n发送【帮助】查看使用机器人流程。', msg['RecommendInfo']['UserName'])	
+    itchat.send_msg('[愉快]你好，我是网购优惠券、返利机器人，\n发送【帮助】查看使用机器人流程。', msg['RecommendInfo']['UserName'])
+	
+		
 
 def  main():	
 	#登陆微信
 	itchat.auto_login(hotReload=True)
 	itchat.run()
-	
 
-		
-		
-		
 #itchat.send('Hello, filehelper', toUserName='filehelper')
 	
 if __name__ == "__main__":
