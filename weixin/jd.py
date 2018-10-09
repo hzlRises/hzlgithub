@@ -1,5 +1,5 @@
 #coding:utf-8
-import time,md5,requests,json,sys,urllib
+import time,md5,requests,json,sys,urllib,re
 import secret
 #hzl
 reload(sys)
@@ -8,11 +8,6 @@ sys.setdefaultencoding("utf-8")
 获取access_token
 https://auth.360buy.com/oauth/token?grant_type=authorization_code&client_id=5516FCE2AEB0F8D4143494099E0471B5&redirect_uri=http://techseo.cn/&code=o4Ry0I&state=quanyi&client_secret=a5addbe9dd9b43adab27d2071da09e9c
 '''
-
-
-
-
-
 
 #长链接转换为短链接
 def getShortUrl(url):
@@ -24,11 +19,9 @@ def getShortUrl(url):
 		
 
 
-def getGoodsIdByUrl(url):
-	#url = 'https://item.m.jd.com/product/12673813270.html?&utm_source=iosapp&utm_medium=appshare&utm_campaign=t_335139774&utm_term=CopyURL'
-	if 'item' in url:
-		sku_id = url.split('/')[4].split('.')[0]
-		return sku_id
+def getGoodsIdByUrl(url):	
+	sku_id = re.search(r'\d+',url).group(0)	
+	return sku_id
 	'''
 	else:		
 		id_str_list = url.split('&')
