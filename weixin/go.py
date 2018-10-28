@@ -1,5 +1,5 @@
 #coding:utf-8
-import itchat,json,time,requests,sys,urllib,os,re,weather
+import itchat,json,time,requests,sys,urllib,os,re
 import jd
 from PIL import Image
 from selenium import webdriver
@@ -48,7 +48,7 @@ def text_reply(msg):
 		itchat.send( friend_name+u'申请提现',toUserName = userName)				
 		#判断提现人性别
 		if friend_content['Sex'] == 1:
-			message = friend_name +u'帅哥请耐心等待，客服确认中'	
+			message = friend_name +u' 帅哥请耐心等待，客服确认中'	
 		elif friend_content['Sex'] == 0:
 			message = friend_name +u'美女请耐心等待，客服确认中'
 		else:
@@ -71,7 +71,7 @@ def text_reply(msg):
 		else:
 			key = 'beijingtianqi'
 		weather_url = 'https://www.baidu.com/s?ie=UTF-8&wd=%s'%key
-		browser = webdriver.PhantomJS(executable_path=r'D:\programfiles\anaconda\Lib\site-packages\selenium\webdriver\phantomjs\bin\phantomjs.exe')
+		browser = webdriver.PhantomJS(executable_path=r'/usr/local/bin/phantomjs')
 		browser.get(weather_url)
 		browser.maximize_window()
 		browser.save_screenshot('send_auto_answes.png')#保存截图	
@@ -97,20 +97,21 @@ def text_reply(msg):
 		'''
 		
 		
-	elif '我的基金' in msg['Text']:
-		fund_list = ['162605','160505','002121','000011','163402','070032','217027','165312','519066','110022']
+	elif '大盘' in msg['Text']:
+		#fund_list = ['162605','160505','002121','000011','163402','070032','217027','165312','519066','110022']
+		fund_list = ['dapan',]
 		for index,fund in enumerate(fund_list):
 			fund_id = str(fund)		
-			#url = 'https://www.baidu.com/s?ie=UTF-8&wd=%s'%str(fund_id)	
-			url = 'http://fund.eastmoney.com/%s.html'%str(fund_id)				
+			url = 'https://www.baidu.com/s?ie=UTF-8&wd=%s'%str(fund_id)	
+			#url = 'http://fund.eastmoney.com/%s.html'%str(fund_id)				
 			picName = 'fund_%s.png'%index
-			browser = webdriver.PhantomJS(executable_path=r'D:\programfiles\anaconda\Lib\site-packages\selenium\webdriver\phantomjs\bin\phantomjs.exe')
+			browser = webdriver.PhantomJS(executable_path=r'/usr/local/bin/phantomjs')
 			browser.get(url)
 			browser.maximize_window()
 			browser.save_screenshot(picName)#保存截图	
 			
 			
-			imgelement = browser.find_element_by_xpath('//*[@id="body"]/div[14]/div/div/div[1]')
+			imgelement = browser.find_element_by_xpath('//*[@id="1"]/div[1]')
 			'''
 			if fund_id == '002121':
 				imgelement = browser.find_element_by_xpath('//*[@id="2"]')
@@ -201,7 +202,7 @@ def add_friend(msg):
 
 def  main():	
 	#登陆微信
-	itchat.auto_login(hotReload=True)
+	itchat.auto_login(hotReload=True,enableCmdQR=2)#
 	itchat.run()
 
 #itchat.send('Hello, filehelper', toUserName='filehelper')
