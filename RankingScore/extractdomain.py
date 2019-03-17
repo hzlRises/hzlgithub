@@ -12,12 +12,7 @@ import sys
 import subprocess
 import os
 #http://my.oschina.net/guol/blog/95699
-'''
-最终会生成:
-result.xls	存放最终计算结果...
-t_keyword.txt 存放异常关键词...
 
-'''
 reload(sys)
 sys.setdefaultencoding('utf8')
 
