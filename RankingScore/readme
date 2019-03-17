@@ -13,6 +13,9 @@ cmd执行Import，将excel数据导入表t_keyword
 抓取排名：
 cmd执行Crawler
 
+提取域名：
+cmd执行 exactdomain.py
+
 分析数据：
 cmd执行Calculate
 
