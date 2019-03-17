@@ -15,6 +15,22 @@ conn = MySQLdb.connect('localhost','root','','rank',charset='utf8')
 def getWant(line):
 	keyword = sheet1.row_values(line)[0]		
 	url = url_list[line]
+	
+	headers = {
+		"Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8",
+		"Accept-Encoding":"gzip, deflate, br",
+		"Accept-Language":"zh-CN,zh;q=0.9,en;q=0.8",
+		"Cache-Control":"no-cache",
+		"Connection":"keep-alive",
+		"Cookie":"BAIDUID=2033772EEBCB46478009DBFED664CC4E:FG=1; BIDUPSID=2033772EEBCB46478009DBFED664CC4E; PSTM=1522486596; __cfduid=d528bcd15bea5bb7521cb3997076e327e1522489086; MSA_WH=375_812; BDUSS=Gh2UGdwOU5uRGZLOXpJTlRZN0Noa0Y0RGNVbWVOdnQ2bUU3V0xyWDVIQ3FZMnBjQVFBQUFBJCQAAAAAAAAAAAEAAABh7s8nxLDErGxpZmUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKrWQlyq1kJcd; BD_UPN=12314353; BDORZ=B490B5EBF6F3CD402E515D22BCDA1598; MCITY=-%3A; SIGNIN_UC=70a2711cf1d3d9b1a82d2f87d633bd8a03028185933; delPer=0; BD_CK_SAM=1; PSINO=2; BD_HOME=1; sug=3; sugstore=0; ORIGIN=0; bdime=0; H_PS_645EC=1392Nvj6zhOwi%2FkXuJ4DWWI39pM69UgVoLWmC%2BoyViVcm%2FHVRGW60SZazlc; BDRCVFR[VjobkFsAYtR]=mk3SLVN4HKm; BDSVRTM=98; H_PS_PSSID=",
+		"Host":"www.baidu.com",
+		"Pragma":"no-cache",
+		"Upgrade-Insecure-Requests":"1",
+		"User-Agent":"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36"
+	}
+	r = requests.get(url,headers=headers,timeout=60)
+	html = r.content
+	'''
 	c = pycurl.Curl()
 	c.setopt(c.URL,url)
 	c.setopt(c.CONNECTTIMEOUT, 60)
@@ -23,7 +39,8 @@ def getWant(line):
 	c.setopt(c.WRITEFUNCTION,b.write)
 	c.perform()
 	html = b.getvalue()
-	mutex.acquire()	
+	'''	
+	mutex.acquire()		
 	jsondata = json.loads(html)
 	
 	#写入MySQL
