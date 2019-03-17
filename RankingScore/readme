@@ -16,6 +16,9 @@ cmd执行Crawler
 提取域名：
 cmd执行 exactdomain.py
 
+对域名去重汇总
+cmd执行 count.py
+
 分析数据：
 cmd执行Calculate
 
