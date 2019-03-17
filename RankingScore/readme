@@ -20,6 +20,7 @@ cmd执行 exactdomain.py
 对域名去重汇总
 cmd执行 count.py
 只拿出行频次前100的域名 ，进行计算
+生成的last.txt文件要使用notepad++  “转为 UTF-8 编码”（不是“转为 UTF-8-BOM 编码”）
 
 分析数据：
 cmd执行Calculate.py
