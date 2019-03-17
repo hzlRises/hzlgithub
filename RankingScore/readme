@@ -22,7 +22,7 @@ cmd执行 count.py
 只拿出行频次前100的域名 ，进行计算
 
 分析数据：
-cmd执行Calculate
+cmd执行Calculate.py
 
 最后结果保存在result.xlsx
 
