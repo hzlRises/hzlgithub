@@ -4,7 +4,7 @@ import xml.dom.minidom
 from xml.etree import ElementTree as ET
 import smtplib
 from email.mime.text import MIMEText
-from email.header import Header
+from email.header import Headere
 mail_port = 25
 mail_host = 'smtp.163.com'
 
